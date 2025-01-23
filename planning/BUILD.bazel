@@ -1,0 +1,147 @@
+cc_library(
+    name = "planning",
+    srcs = [
+        "src/planning.cpp",
+        "src/proximity-planner.cpp",
+    ],
+    hdrs = [
+        "include/planning.h",
+        "include/proximity-planner.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":footprint-transform",
+        ":occupancy-grid",
+        ":revoy-space",
+        ":types",
+        "@ompl",
+    ],
+)
+
+cc_library(
+    name = "revoy-space",
+    srcs = [
+        "src/revoy-space.cpp",
+    ],
+    hdrs = [
+        "include/revoy-space.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":types",
+        "@ompl",
+    ],
+)
+
+cc_library(
+    name = "footprint-transform",
+    srcs = [
+        "src/footprint-transform.cpp",
+    ],
+    hdrs = [
+        "include/footprint-transform.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":types",
+    ],
+)
+
+cc_library(
+    name = "occupancy-grid",
+    srcs = [
+        "src/occupancy-grid.cpp",
+    ],
+    hdrs = [
+        "include/occupancy-grid.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":types",
+    ],
+)
+
+cc_library(
+    name = "types",
+    srcs = [
+        "src/types.cpp",
+    ],
+    hdrs = [
+        "include/types.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        "@eigen",
+    ],
+)
+
+cc_test(
+    name = "test-planning",
+    srcs = ["test/test-planning.cpp"],
+    deps = [
+        ":planning",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_library(
+    name = "simpl",
+    srcs = [
+        "src/add-footprint-to-grid.cpp",
+        "src/footprint-overlap.cpp",
+        "src/mock-revoy-ev.cpp",
+        "src/simpl.cpp",
+        "src/simpl-to-scene.cpp",
+    ],
+    hdrs = [
+        "include/add-footprint-to-grid.h",
+        "include/footprint-overlap.h",
+        "include/mock-revoy-ev.h",
+        "include/simpl.h",
+        "include/simpl-to-scene.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":mcap-utils",
+        ":planning",
+        "@clipper2",
+    ],
+)
+
+cc_test(
+    name = "test-simpl",
+    srcs = ["test/test-simpl.cpp"],
+    deps = [
+        ":simpl",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_library(
+    name = "mcap-utils",
+    srcs = [
+        "src/mcap-utils.cpp",
+    ],
+    hdrs = [
+        "include/mcap-utils.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":footprint-transform",
+        ":occupancy-grid",
+        ":revoy-space",
+        "//third-party/build-proto-fds",
+        "@foxglove_schemas_protobuf//:grid_cc_proto",
+        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
+        "@foxglove_schemas_protobuf//:poses_in_frame_cc_proto",
+        "@mcap",
+    ],
+)
