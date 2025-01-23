@@ -1,0 +1,10 @@
+bazel_dep(name = "rules_cc", version = "0.0.16")
+bazel_dep(name = "boost.dynamic_bitset", version = "1.83.0")
+bazel_dep(name = "boost.graph", version = "1.83.0")
+bazel_dep(name = "boost.filesystem", version = "1.83.0")
+bazel_dep(name = "boost.serialization", version = "1.83.0")
+bazel_dep(name = "mcap", version = "1.4.0")
+bazel_dep(name = "foxglove_schemas_protobuf", version = "0.2.2")
+bazel_dep(name = "catch2", version = "3.8.0")
+bazel_dep(name = "eigen", version = "4.0.0-20241125.bcr.1")
+
