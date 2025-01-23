@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+proto_library(
+    name = "empty",
+    srcs = ["empty.proto"],
+)
+
+cc_proto_library(
+    name = "empty_cc",
+    deps = [
+        ":empty",
+    ],
+)
+
+cc_library(
+    name = "build-proto-fds",
+    srcs = [
+        "build-proto-fds.cpp",
+    ],
+    hdrs = [
+        "build-proto-fds.h",
+    ],
+    include_prefix = "build-proto-fds",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":empty_cc",
+    ],
+)
+

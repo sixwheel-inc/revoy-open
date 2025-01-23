@@ -1,0 +1,27 @@
+
+cc_library(
+    name = "clipper2",
+    srcs = [
+        "CPP/Clipper2Lib/src/clipper.engine.cpp",
+        "CPP/Clipper2Lib/src/clipper.offset.cpp",
+        "CPP/Clipper2Lib/src/clipper.rectclip.cpp",
+    ],
+    hdrs = [
+        "CPP/Clipper2Lib/include/clipper2/clipper.core.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.export.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.minkowski.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.rectclip.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.engine.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.version.h",
+        "CPP/Clipper2Lib/include/clipper2/clipper.offset.h",        
+    ],
+    strip_include_prefix="CPP/Clipper2Lib/include/",
+    # includes = [
+    #     "include",
+    #     "src",
+    # ],
+    visibility = ["//visibility:public"],
+)
+
+
