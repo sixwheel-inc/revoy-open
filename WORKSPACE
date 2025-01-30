@@ -10,7 +10,7 @@ http_archive(
 
 http_archive(
     name = "clipper2",
-    # sha256 = "f03daa95d2bbf1c21e91a38786242c245f4740f16aa9e9adbf7c7e0236e3c625",
+    integrity = "sha256-JMjP09PY82l8PEHKBD0YQ4VUvM3moNLyWQam9/qapf8=",
     build_file = "@//third-party/clipper2:clipper2.BUILD.bazel",
     strip_prefix = "Clipper2-Clipper2_1.4.0",
     urls = [

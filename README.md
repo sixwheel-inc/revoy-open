@@ -1,10 +1,8 @@
-# Planning
-
-A demo of the work I did at Revoy Inc.
+# Revoy Open
 
 ## Acknowledgements
 
-None of my work would have been possible without the team of people, designing, building, testing, maintaining, and deploying a fleet of robots to actual customers:
+The code in this project is largely the work of Shashwat Kandadai, however none of this work would have been possible without the team of people, designing, building, testing, maintaining, and deploying a fleet of robots, serving paying customers:
 
 - Bayne Smith
 - Beverly Morrison
@@ -19,14 +17,17 @@ None of my work would have been possible without the team of people, designing, 
 - Sami Rajala
 - Selina Pan
 - Shaochun Ye
+- Shashwat Kandadai
 - Sina Nejati
 - Yan Aolan
 - Zach Wiley
 
-This project relies on many open-source projects, most significantly
+This code relies on many open-source projects, most significantly
 
 - projectchrono
 - ompl
 - foxglove / mcap
+- bazel
+- podman / buildah
+- clang
 
-##
