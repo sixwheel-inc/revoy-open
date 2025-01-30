@@ -140,8 +140,8 @@ cc_library(
         ":revoy-space",
         "//third-party/build-proto-fds",
         "@foxglove_schemas_protobuf//:grid_cc_proto",
-        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
         "@foxglove_schemas_protobuf//:poses_in_frame_cc_proto",
+        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
         "@mcap",
     ],
 )

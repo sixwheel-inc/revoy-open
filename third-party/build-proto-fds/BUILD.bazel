@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto3"
 
 proto_library(
     name = "empty",
@@ -26,4 +26,3 @@ cc_library(
         ":empty_cc",
     ],
 )
-

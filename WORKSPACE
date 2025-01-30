@@ -10,11 +10,10 @@ http_archive(
 
 http_archive(
     name = "clipper2",
-    integrity = "sha256-JMjP09PY82l8PEHKBD0YQ4VUvM3moNLyWQam9/qapf8=",
     build_file = "@//third-party/clipper2:clipper2.BUILD.bazel",
+    integrity = "sha256-JMjP09PY82l8PEHKBD0YQ4VUvM3moNLyWQam9/qapf8=",
     strip_prefix = "Clipper2-Clipper2_1.4.0",
     urls = [
         "https://github.com/AngusJohnson/Clipper2/archive/refs/tags/Clipper2_1.4.0.zip",
     ],
 )
-

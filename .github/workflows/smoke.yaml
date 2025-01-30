@@ -1,0 +1,44 @@
+name: smoke
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ github.token }}
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branch:
+      - main
+
+jobs:
+  container-bazel-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: get-image
+        id: get-image
+        run: ./ci-runner/get-image.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
+        continue-on-error: true
+      - name: run-make-container-image-script
+        if: ${{ steps.get-image.outcome != 'success' }}
+        run: ./containers/buildah-image.sh ${{ hashFiles('containers/buildah-image.sh') }}
+        shell: bash
+      - name: push-image-to-registry
+        uses: redhat-actions/push-to-registry@v2
+        if: ${{ steps.get-image.outcome != 'success' }}
+        with:
+          image: revoy-open
+          tags: ${{ hashFiles('containers/buildah-image.sh') }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+      - name: print-image-url
+        if: ${{ steps.get-image.outcome != 'success' }}
+        run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
+      - name: check-formatting
+        run: ./.github/workflows/scripts/podman-check-formatting.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
+      - name: run-unit-tests-in-container
+        run: ./.github/workflows/scripts/podman-unit-test.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
+        shell: bash
+

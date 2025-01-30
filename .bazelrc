@@ -1,0 +1,10 @@
+# Please keep this file heavily annotated, so that future developers
+# understand why a flag is being enabled.
+
+# Hermetic builds, should be run from inside the appropriate container
+# (see //containers/...)
+build:container \
+    --extra_execution_platforms="//platforms/linux:clang" \
+    --extra_toolchains="//toolchains/container:clang" \
+    --extra_toolchains="//toolchains/container:py_toolchain"
+

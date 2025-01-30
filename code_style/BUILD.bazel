@@ -1,0 +1,5 @@
+py_binary(
+    name = "format_everything",
+    srcs = ["format_everything.py"],
+    visibility = ["//visibility:public"],
+)
