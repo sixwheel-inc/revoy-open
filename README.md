@@ -2,7 +2,7 @@
 
 ## Acknowledgements
 
-The code in this project is largely the work of Shashwat Kandadai, however none of this work would have been possible without the team of people, designing, building, testing, maintaining, and deploying a fleet of robots, serving paying customers:
+The code in this project is largely the work of Shashwat Kandadai, however all of this work is made possible thanks to the team of people designing, building, testing, maintaining, deploying a fleet of robots, and serving paying customers:
 
 - Bayne Smith
 - Beverly Morrison
@@ -26,8 +26,12 @@ This code relies on many open-source projects, most significantly
 
 - projectchrono
 - ompl
-- foxglove / mcap
+- foxglove and mcap
 - bazel
-- podman / buildah
+- podman and buildah
 - clang
-
+- gcc
+- linux: ubuntu and fedora
+- python
+- git
+- TODO: add any more to this list that may have been forgotten by accident.
