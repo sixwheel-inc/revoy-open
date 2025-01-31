@@ -17,3 +17,19 @@ http_archive(
         "https://github.com/AngusJohnson/Clipper2/archive/refs/tags/Clipper2_1.4.0.zip",
     ],
 )
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
+new_git_repository(
+    name = "projectchrono",
+    build_file = "@//third-party/projectchrono:projectchrono.BUILD.bazel",
+    commit = "60c899142d8216ba578de31449524639c3e417e7",
+    remote = "https://github.com/ian-sixwheel/chrono",
+)
+
+# sometimes useful for local debugging
+# new_local_repository(
+#     name = "projectchrono",
+#     build_file = "@//third-party/projectchrono:projectchrono.BUILD.bazel",
+#     path = "~/chrono",
+# )
+

@@ -1,0 +1,90 @@
+
+cc_library(
+    name = "revoy-chrono",
+    srcs = ["RevoyKraz.cpp"],
+    hdrs = ["RevoyKraz.h"],
+    copts = [
+        # this needs to be installed via system package manager
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":env-check",
+        "@projectchrono",
+    ],
+)
+
+cc_test(
+    name = "test-revoy-chrono",
+    srcs = ["test-revoy-chrono.cpp"],
+    copts = [
+        # this needs to be installed via system package manager
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    deps = [
+        ":env-check",
+        ":revoy-chrono",
+        "@projectchrono",
+    ],
+)
+
+cc_binary(
+    name = "viz-revoy-chrono",
+    srcs = ["test-revoy-chrono.cpp"],
+
+    # this needs to be installed via system package manager
+    copts = ["-I/usr/include/irrlicht"],
+    deps = [
+        ":env-check",
+        ":revoy-chrono",
+        "@projectchrono",
+    ],
+)
+
+cc_library(
+    name = "env-check",
+    srcs = [
+        "env-check.cpp",
+    ],
+    hdrs = [
+        "env-check.h",
+    ],
+    include_prefix = "revoy-chrono",
+    visibility = ["//visibility:public"],
+    deps = ["@projectchrono"],
+)
+
+cc_library(
+    name = "irr-helper",
+    srcs = [
+        "irr-helper.cpp",
+    ],
+    hdrs = [
+        "irr-helper.h",
+    ],
+    copts = ["-I/usr/include/irrlicht"],
+    include_prefix = "revoy-chrono",
+    visibility = ["//visibility:public"],
+    deps = [":env-check"],
+)
+
+cc_library(
+    name = "chrono-mcap",
+    srcs = [
+        "chrono-mcap.cpp",
+    ],
+    hdrs = [
+        "chrono-mcap.h",
+    ],
+    include_prefix = "revoy-chrono",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//third-party/build-proto-fds",
+        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
+        "@foxglove_schemas_protobuf//:frame_transforms_cc_proto",
+        "@mcap",
+        "@projectchrono",
+    ],
+)

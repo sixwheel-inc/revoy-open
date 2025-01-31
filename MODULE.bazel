@@ -1,4 +1,5 @@
-bazel_dep(name = "rules_cc", version = "0.0.16")
+bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "rules_foreign_cc", version = "0.13.0")
 bazel_dep(name = "mcap", version = "1.4.0")
 bazel_dep(name = "foxglove_schemas_protobuf", version = "0.2.2")
 bazel_dep(name = "catch2", version = "3.8.0")

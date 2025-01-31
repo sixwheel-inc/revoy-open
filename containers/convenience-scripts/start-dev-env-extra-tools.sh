@@ -19,5 +19,6 @@ podman run \
   --volume ~/.config/fish/:/root/.config/fish:z \
   --workdir /revoy-open \
   --secret github-ssh-key \
+  --replace \
   $image_name \
   fish

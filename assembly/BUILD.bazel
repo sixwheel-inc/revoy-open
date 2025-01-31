@@ -1,0 +1,69 @@
+cc_library(
+    name = "assembly",
+    srcs = [
+        "src/assembly.cpp",
+        # "src/tractor.cpp",
+        # "src/revoy.cpp",
+        "src/tractor-trailer.cpp",
+        # "src/tractor-revoy.cpp",
+        # "src/revoy-trailer.cpp",
+        "src/tractor-revoy-trailer.cpp",
+    ],
+    hdrs = [
+        "include/assembly.h",
+        # "include/tractor-revoy.h",
+        "include/tractor-revoy-trailer.h",
+        "include/tractor-trailer.h",
+    ],
+    # needed at run-time, for visualizations
+    # only useable outside the container, needs GPU access
+    copts = [
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    include_prefix = "assembly",
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//revoy-chrono",
+        "//revoy-chrono:chrono-mcap",
+        "@projectchrono",
+    ],
+)
+
+cc_test(
+    name = "test-assembly",
+    srcs = ["test/test-assembly.cpp"],
+    copts = [
+        # this needs to be installed via system package manager
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    deps = [
+        ":assembly",
+        "//revoy-chrono:chrono-mcap",
+        "//revoy-chrono:irr-helper",
+        "@catch2//:catch2_main",
+    ],
+)
+
+## duplicate of the test above, but will run live-viz
+cc_binary(
+    name = "viz-assembly",
+    srcs = ["test/test-assembly.cpp"],
+    copts = ["-I/usr/include/irrlicht"],
+    deps = [
+        ":assembly",
+        "//revoy-chrono:chrono-mcap",
+        "//revoy-chrono:irr-helper",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_binary(
+    name = "gnuplot",
+    srcs = ["src/gnuplot.cpp"],
+    deps = [
+        "@projectchrono",
+    ],
+)
