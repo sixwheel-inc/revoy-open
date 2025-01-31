@@ -1,0 +1,60 @@
+cc_library(
+    name = "zaxis",
+    srcs = [
+        "make-scenarios.cpp",
+        "zaxis.cpp",
+    ],
+    hdrs = [
+        "make-scenarios.h",
+        "zaxis.h",
+    ],
+    copts = [
+        # needed at run-time, for visualizations
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    include_prefix = "",
+    deps = [
+        "//assembly",
+        "//helm",
+        "//revoy-chrono:chrono-mcap",
+        "//revoy-chrono:env-check",
+        "//revoy-chrono:irr-helper",
+    ],
+)
+
+cc_test(
+    name = "test-zaxis",
+    srcs = ["test-zaxis.cpp"],
+    copts = [
+        # needed at run-time, for visualizations
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    deps = [
+        ":zaxis",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_binary(
+    name = "viz-zaxis",
+    srcs = ["test-zaxis.cpp"],
+    copts = ["-I/usr/include/irrlicht"],
+    deps = [
+        ":zaxis",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_binary(
+    name = "run-zaxis",
+    srcs = ["run-zaxis.cpp"],
+    copts = [
+        "-I/usr/include/irrlicht",
+        "-Werror",
+    ],
+    deps = [
+        ":zaxis",
+    ],
+)

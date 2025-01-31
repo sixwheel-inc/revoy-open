@@ -5,6 +5,10 @@
 #define M_PI 3.141592653589793238462643383279502884
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "action.h"
 #include "goal.h"
 #include "instrument-reading.h"
@@ -61,5 +65,9 @@ bool IsGoalReached(const Goal *goal, const InstrumentReading *reading,
  * adjust the reading towards the goal.
  */
 Action CalculateAction(const Goal *goal, const InstrumentReading *reading);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif

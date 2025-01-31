@@ -2,3 +2,6 @@ bazel-bin
 bazel-out
 bazel-revoy-open
 bazel-testlogs
+
+*.mcap
+
