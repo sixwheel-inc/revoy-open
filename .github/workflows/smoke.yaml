@@ -17,34 +17,42 @@ jobs:
   container-bazel-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: get-image
+      - name: Get the code.
+        uses: actions/checkout@v3
+
+      - name: Get cached (or create new) hermetic container (used for repeatable tests).
         id: get-image
         run: ./ci-runner/get-image.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
         continue-on-error: true
-      - name: run-make-container-image-script
+
+      - name: Use buildah script to make new hermetic container.
         if: ${{ steps.get-image.outcome != 'success' }}
         run: ./containers/buildah-image.sh ${{ hashFiles('containers/buildah-image.sh') }}
         shell: bash
-      - name: push-image-to-registry
+
+      - name: Update image cache with new hermetic container.
         uses: redhat-actions/push-to-registry@v2
         if: ${{ steps.get-image.outcome != 'success' }}
         with:
           image: revoy-open
           tags: ${{ hashFiles('containers/buildah-image.sh') }}
           registry: ${{ env.IMAGE_REGISTRY }}
-      - name: print-image-url
+
+      - name: (Debug) Use this URL to access this image.
         if: ${{ steps.get-image.outcome != 'success' }}
         run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
-      - uses: bazel-contrib/setup-bazel@0.13.0
+
+      - name: Setup a coarse Bazel Cache, to avoid rebuilding stable deps.
+        uses: bazel-contrib/setup-bazel@0.13.0
         with:
-          # Store build cache per workflow.
-          disk-cache: ${{ github.workflow }}
-          # Share repository cache between workflows.
+          disk-cache: true
+          external-cache: true
           repository-cache: true
-      - name: check-formatting
+
+      - name: Ensure code formatters (clang-tidy, black, buildifier) report no errors.
         run: ./.github/workflows/scripts/podman-check-formatting.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
-      - name: run-unit-tests-in-container
+
+      - name: Run all unittests.
         run: ./.github/workflows/scripts/podman-unit-test.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
         shell: bash
 
