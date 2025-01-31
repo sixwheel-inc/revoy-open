@@ -1,0 +1,35 @@
+cc_library(
+    name = "helm",
+    srcs = [
+        "helm.c",
+    ],
+    hdrs = [
+        "action.h",
+        "goal.h",
+        "helm.h",
+        "instrument-reading.h",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "testutil-fake-vehicle-update",
+    testonly = True,
+    srcs = ["testutil-fake-vehicle-update.c"],
+    hdrs = [
+        "action.h",
+        "instrument-reading.h",
+        "testutil-fake-vehicle-update.h",
+    ],
+)
+
+cc_test(
+    name = "test-helm",
+    srcs = [
+        "test-helm.c",
+    ],
+    deps = [
+        ":helm",
+        ":testutil-fake-vehicle-update",
+    ],
+)
