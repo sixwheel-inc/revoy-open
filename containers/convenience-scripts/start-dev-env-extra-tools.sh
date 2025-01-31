@@ -15,6 +15,7 @@ podman run \
   --interactive --tty \
   --volume ~/revoy-open:/revoy-open:z \
   --volume ~/.cache/bazel:/root/.cache/bazel:z \
+  --volume ~/.cache/bazel-disk:/root/.cache/bazel-disk:z \
   --volume ~/.config/helix/:/root/.config/helix:z \
   --volume ~/.config/fish/:/root/.config/fish:z \
   --workdir /revoy-open \

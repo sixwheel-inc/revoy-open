@@ -15,6 +15,7 @@ podman run \
   --interactive --tty \
   --volume ~/revoy-open:/revoy-open:z \
   --volume ~/.cache/bazel:/root/.cache/bazel:z \
+  --volume ~/.cache/bazel-disk:/root/.cache/bazel-disk:z \
   --workdir /revoy-open \
   $image_name \
   bash

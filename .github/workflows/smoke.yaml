@@ -36,6 +36,12 @@ jobs:
       - name: print-image-url
         if: ${{ steps.get-image.outcome != 'success' }}
         run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
+      - uses: bazel-contrib/setup-bazel@0.13.0
+        with:
+          # Store build cache per workflow.
+          disk-cache: ${{ github.workflow }}
+          # Share repository cache between workflows.
+          repository-cache: true
       - name: check-formatting
         run: ./.github/workflows/scripts/podman-check-formatting.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
       - name: run-unit-tests-in-container
