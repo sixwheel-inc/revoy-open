@@ -1,5 +1,9 @@
 # Revoy Open
 
+## Planning (using OMPL)
+
+## 3D Simulation (using projectchrono)
+
 ## Acknowledgements
 
 The code in this project is largely the work of Shashwat Kandadai, however all of this work is made possible thanks to the team of people designing, building, testing, maintaining, deploying a fleet of robots, and serving paying customers:

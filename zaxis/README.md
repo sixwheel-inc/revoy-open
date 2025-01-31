@@ -2,14 +2,18 @@
 
 Top-level of the 3D Simulator, combines and coordinates between:
 
-- Assembly (projectchrono physics)
-- Helm (shared w/ HIL and SIL)
-- Long Control (Simulink ERT codegen)
-- Lat Control (Simulink ERT codegen)
-- Mcap
-- Irrlicht
-
-## [How to Use w/ CI](https://docs.google.com/document/d/1qtSKEpkkB9xzdp8gaG1QNkkXwBfX1RkTjxqT5dwruh0/edit?tab=t.0#heading=h.go681w4epabz)
+- Assembly
+  - wrapper around projectchrono wheeled-vehicles and wheeled-trailers
+- Helm
+  - drives the simulated tractor, follows a series of goals
+- Long Control
+  - simulink ERT codegen not included in this repo
+- Lat Control
+  - simulink ERT codegen not included in this repo
+- Mcap (third-party)
+  - fast writing of protobuf messages to disk
+- Irrlicht (third-party)
+  - comes w/ projectchrono, live view of the 3D Simulation, useful for debugging
 
 ## General Usage
 
@@ -18,17 +22,6 @@ bazel run //zaxis:run-zaxis -- <assembly-type> <scenario-type> [scenario-params 
 ```
 
 See [test script](../ci-runner/chrono-test.sh) for examples.
-
-## Note about codegen, logging, and replay
-
-This project relies on two sources of code generation:
-- Simulink ERT generates the C code for Controls
-  - This is how we run Controls alongside the rest of the simulation, in CI, w/o needing any licenses
-  - Otherwise we would have to run everything else inside Simulink, or use TCP, or something
-- //dense_log_codegen generates the protobuf for Controls IO
-  - This is used to fill an Mcap with all the IO during the scenario
-    - the Mcap can be viewed in Foxglove
-    - the Mcap can be used to replay what happened, in Simulink (see control-design/IsolatedControlsReplay.slx)
 
 ## arch
 
@@ -73,7 +66,7 @@ Wrapper for projectchrono wheeled-vehicle models, maintains and updates the phys
 #### Output: Model State
 - current speed, angles, forces, XYZ, for all vehicle components
 
-### Long Controls / Lat Controls
+### Long Controls / Lat Controls (not included in this repo)
 
 Wrapper around Simulink ERT codegen Isolated Controls, tells the RevoyEV what to do.
 
