@@ -65,10 +65,8 @@ public:
                    const DriverInputs &revoy_inputs, const ChTerrain &terrain);
 
   void Advance(double step);
-    
-  double GetHitchTorque() const {
-    return m_revoy->GetHitchTorque();
-  };
+
+  double GetHitchTorque() const { return m_revoy->GetHitchTorque(); };
 
 private:
   ChSystem *m_system;

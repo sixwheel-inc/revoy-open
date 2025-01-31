@@ -74,7 +74,7 @@ void RevoyChrono::step(double step_size, const DriverInputs &driverInputs,
 
   if (Vdot(revoy->GetTractor().GetChassisBody()->GetRotMat().GetAxisZ(),
            ChWorldFrame::Vertical()) < 0) {
-    std::cout << "rollover!" << std::endl;
+    // std::cout << "rollover!" << std::endl;
   }
 
   // Update modules (process inputs from other modules)
@@ -207,46 +207,44 @@ int main() {
   // Create vehicle
   RevoyChrono revoy;
 
-  std::cout << "AAAAAA!" << std::endl;
+  revoy.getRevoy()->SetChassisVisualizationType(VisualizationType::MESH,
+                                                VisualizationType::MESH);
+  revoy.getRevoy()->SetSuspensionVisualizationType(
+      VisualizationType::PRIMITIVES, VisualizationType::PRIMITIVES);
+  revoy.getRevoy()->SetSteeringVisualizationType(VisualizationType::PRIMITIVES);
+  revoy.getRevoy()->SetWheelVisualizationType(VisualizationType::MESH,
+                                              VisualizationType::MESH);
+  revoy.getRevoy()->SetTireVisualizationType(VisualizationType::MESH,
+                                             VisualizationType::MESH);
 
-  // revoy.getRevoy()->SetChassisVisualizationType(VisualizationType::MESH,
-  //                                               VisualizationType::MESH);
-  // revoy.getRevoy()->SetSuspensionVisualizationType(
-  //     VisualizationType::PRIMITIVES, VisualizationType::PRIMITIVES);
-  // revoy.getRevoy()->SetSteeringVisualizationType(VisualizationType::PRIMITIVES);
-  // revoy.getRevoy()->SetWheelVisualizationType(VisualizationType::MESH,
-  //                                             VisualizationType::MESH);
-  // revoy.getRevoy()->SetTireVisualizationType(VisualizationType::MESH,
-  //                                            VisualizationType::MESH);
-
-  // std::shared_ptr<ChVehicleVisualSystem> vis;
-  // if (!IsRunningInTest()) {
-  //   auto vis_irr =
-  //       chrono_types::make_shared<ChWheeledVehicleVisualSystemIrrlicht>();
-  //   vis_irr->SetWindowTitle("Rollover Demo");
-  //   vis_irr->SetChaseCamera(ChVector3d(0.0, 0.0, 2.0), 5.0, 0.05);
-  //   vis_irr->Initialize();
-  //   vis_irr->AddLightDirectional(70, 20);
-  //   vis_irr->AddSkyBox();
-  //   vis_irr->AddLogo();
-  //   vis_irr->AttachVehicle(&revoy.getRevoy()->GetTractor());
-  //   // vis_irr->AttachVehicle(&revoy.GetTrailer());
-  //   vis = vis_irr;
-  // }
+  std::shared_ptr<ChVehicleVisualSystem> vis;
+  if (!IsRunningInTest()) {
+    auto vis_irr =
+        chrono_types::make_shared<ChWheeledVehicleVisualSystemIrrlicht>();
+    vis_irr->SetWindowTitle("Rollover Demo");
+    vis_irr->SetChaseCamera(ChVector3d(0.0, 0.0, 2.0), 5.0, 0.05);
+    vis_irr->Initialize();
+    vis_irr->AddLightDirectional(70, 20);
+    vis_irr->AddSkyBox();
+    vis_irr->AddLogo();
+    vis_irr->AttachVehicle(&revoy.getRevoy()->GetTractor());
+    // vis_irr->AttachVehicle(&revoy.GetTrailer());
+    vis = vis_irr;
+  }
 
   double time = 0;
   while (true) {
 
-    // // Render scene
-    // if (!IsRunningInTest() && vis) {
-    //   if (!vis->Run()) {
-    //     break;
-    //   }
+    // Render scene
+    if (!IsRunningInTest() && vis) {
+      if (!vis->Run()) {
+        break;
+      }
 
-    //   vis->BeginScene();
-    //   vis->Render();
-    //   vis->EndScene();
-    // }
+      vis->BeginScene();
+      vis->Render();
+      vis->EndScene();
+    }
 
     if (time > t_end) {
       break;
@@ -257,15 +255,13 @@ int main() {
 
     revoy.step(step_size, driverInputs, driverInputs);
 
-    // if (!IsRunningInTest() && vis) {
-    //   vis->Synchronize(time, driverInputs);
-    //   vis->Advance(step_size);
-    // }
+    if (!IsRunningInTest() && vis) {
+      vis->Synchronize(time, driverInputs);
+      vis->Advance(step_size);
+    }
 
     time += step_size;
   }
-
-  std::cout << "BBBBBB!" << std::endl;
 
   return 0;
 };

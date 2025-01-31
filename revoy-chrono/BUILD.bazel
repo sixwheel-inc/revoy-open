@@ -1,4 +1,3 @@
-
 cc_library(
     name = "revoy-chrono",
     srcs = ["RevoyKraz.cpp"],
@@ -82,8 +81,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//third-party/build-proto-fds",
-        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
         "@foxglove_schemas_protobuf//:frame_transforms_cc_proto",
+        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
         "@mcap",
         "@projectchrono",
     ],

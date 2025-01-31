@@ -19,10 +19,11 @@ http_archive(
 )
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
+
 new_git_repository(
     name = "projectchrono",
     build_file = "@//third-party/projectchrono:projectchrono.BUILD.bazel",
-    commit = "60c899142d8216ba578de31449524639c3e417e7",
+    commit = "4aa1b10dff8a6b529ec95f39ab8461032e19ec86",
     remote = "https://github.com/ian-sixwheel/chrono",
 )
 
@@ -32,4 +33,3 @@ new_git_repository(
 #     build_file = "@//third-party/projectchrono:projectchrono.BUILD.bazel",
 #     path = "~/chrono",
 # )
-

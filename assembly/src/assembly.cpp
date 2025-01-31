@@ -8,7 +8,6 @@
 #include "chrono_models/vehicle/kraz/Revoy.h"
 #include "chrono_vehicle/wheeled_vehicle/driveline/ChShaftsDriveline4WD.h"
 
-
 #include <numbers>
 
 namespace revoy {
