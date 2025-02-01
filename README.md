@@ -1,8 +1,28 @@
 # Revoy Open
 
+This repo contains FOSS ports of internal Revoy projects, mainly related to Autonomy and Safety.
+
 ## Planning (using OMPL)
 
+### Current Goal: improve operator safety by using autonomy to stop for hazards
+
+Operators on-site us an RC Controller to move the Revoy EV around the yard. Since the RevoyEV is so large, it is difficult for the operator to see all around the vehicle
+
+### Future Goal: fully autonomous yard operations (drop-n-hook, etc)
+
 ## 3D Simulation (using projectchrono)
+
+### Current Goal: allow Controls engineers to develop advanced high-speed safety behaviors
+
+Using the 3D Simulation, validate the safety behaviors can prevent:
+
+- loss of traction
+- jackknife
+- rollover
+- crack-the-whip
+- etc
+
+### Future Goal: aerodynamics, battery / electric-motor dynamics, complex road-surfaces (gravel etc)
 
 ## Acknowledgements
 
