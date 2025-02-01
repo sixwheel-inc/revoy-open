@@ -8,7 +8,7 @@ This repo contains FOSS ports of internal Revoy projects, mainly related to Auto
 
 Operators on-site use an RC Controller to move the Revoy EV around the yard. Since the RevoyEV is so large, it is difficult for the operator to see all around the vehicle.
 
-We can stop the Revoy from colliding with a hazarc, even if the operator is not aware of the hazard (due to line of sight etc).
+We can stop the Revoy from colliding with a hazard, even if the operator is not aware of the hazard (due to line of sight etc).
 
 ### Future Goal: fully autonomous yard operations (drop-n-hook, etc)
 
