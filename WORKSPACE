@@ -35,7 +35,7 @@ new_git_repository(
 #     path = "~/chrono",
 # )
 
-# Unfortunately the BCR upstream foxglove-shemas seems to be broken, so we
+# Unfortunately the BCR upstream foxglove-schemas seems to be broken, so we
 # fallback to com_google_protobuf and com-foxglove-schema in WORKSPACE
 http_archive(
     name = "com_google_protobuf",
