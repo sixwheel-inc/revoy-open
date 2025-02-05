@@ -74,11 +74,3 @@ jobs:
         if: steps.pr-comment-check.outcome == 'success' || github.ref == 'refs/heads/main'
         run: ./.github/workflows/scripts/podman-chrono-test.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
         shell: bash
-
-      - name: Upload simulation (chrono) mcaps
-        if: steps.pr-comment-check.outcome == 'success' || github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: chrono-mcaps-${{ github.sha }}
-          path: |
-            ${{ github.workspace }}/bazel-bin/zaxis/run-zaxis.runfiles/_main/*.mcap
