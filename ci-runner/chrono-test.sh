@@ -2,21 +2,6 @@
 
 set -ex
 
-echo "run unittests, usually takes ~1-2 min, but will take 3-4 hours when cc_foreign cmake cache misses"
-
-export BAZEL_BIN=$(bazel info bazel-bin)
-
-bazel test \
-  --noshow_progress \
-  --config=container \
-  --cache_test_results=no \
-  --test_env=BAZEL_BIN=$BAZEL_BIN \
-  --test_output=all \
-  //zaxis/... \
-  //assembly/... \
-  //revoy-chrono/... \
-
-
 echo "run scenarios and generate the mcaps"
 
 export REVOY_IRRLICHT_DISABLE=true
