@@ -39,18 +39,20 @@ jobs:
           tags: ${{ hashFiles('containers/buildah-image.sh') }}
           registry: ${{ env.IMAGE_REGISTRY }}
 
+      - name: Clean up repo after building the image.
+        if: ${{ steps.get-image.outcome != 'success' }}
+        run: git clean -fdx . && git reset --hard
+
       - name: (Debug) Use this URL to access this image.
         if: ${{ steps.get-image.outcome != 'success' }}
         run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
 
-      - name: Clean up repo after building the image.
-        run: git clean -fdx . && git reset --hard
-
       - name: Cache bazel output, coarse cache hack to hopefully avoid rebuilding stable external deps.
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: bazel-cache
         with:
-          path: ~/.cache/bazel
+          path: |
+            ~/.cache/bazel/
           key: bazel-${{ runner.os }}-${{ hashFiles('WORKSPACE', 'MODULES.bazel') }}
           restore-keys: |
             bazel-${{ runner.os }}-
@@ -83,3 +85,7 @@ jobs:
         if: steps.pr-comment-check.outcome == 'success' || github.ref == 'refs/heads/main'
         run: ./.github/workflows/scripts/podman-chrono-test.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
         shell: bash
+
+      - name: Remove large bazelisk installation files from bazel cache
+        if: always()
+        run: rm -rf ~/.cache/bazel/install
