@@ -10,10 +10,6 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
-  push:
-    branch:
-      - main
-
   schedule:
   # picked an non-round number to avoid peaks at top-of-hour
   - cron: '13 9 * * 1,2,3,4,5'
