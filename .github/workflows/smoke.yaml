@@ -43,8 +43,17 @@ jobs:
         if: ${{ steps.get-image.outcome != 'success' }}
         run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
 
-      - name: Clean up repo after building the image
+      - name: Clean up repo after building the image.
         run: git clean -fdx . && git reset --hard
+
+      - name: Cache bazel output, coarse cache hack to hopefully avoid rebuilding stable external deps.
+        uses: actions/cache@v3
+        id: bazel-cache
+        with:
+          path: ~/.cache/bazel
+          key: bazel-${{ runner.os }}-${{ hashFiles('WORKSPACE', 'MODULES.bazel') }}
+          restore-keys: |
+            bazel-${{ runner.os }}-
 
       - name: Ensure code formatters (clang-tidy, black, buildifier) report no errors.
         run: ./.github/workflows/scripts/podman-check-formatting.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
