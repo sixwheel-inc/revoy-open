@@ -18,7 +18,6 @@ http_archive(
     ],
 )
 
-
 # Unfortunately we have to use cc_foreign to build projectchrono
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
@@ -29,7 +28,6 @@ new_git_repository(
     remote = "https://github.com/ian-sixwheel/chrono",
 )
 
-
 # sometimes useful for local debugging
 # new_local_repository(
 #     name = "projectchrono",
@@ -37,7 +35,7 @@ new_git_repository(
 #     path = "~/chrono",
 # )
 
-# Unfortunately the BCR upstream foxglove-shemas seems to be broken, so we 
+# Unfortunately the BCR upstream foxglove-shemas seems to be broken, so we
 # fallback to com_google_protobuf and com-foxglove-schema in WORKSPACE
 http_archive(
     name = "com_google_protobuf",

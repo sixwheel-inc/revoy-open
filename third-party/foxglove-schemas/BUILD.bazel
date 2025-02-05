@@ -1,4 +1,3 @@
-
 cc_test(
     name = "test-foxglove-schemas-cpp",
     srcs = ["test-foxglove-schemas.cpp"],
@@ -7,4 +6,3 @@ cc_test(
         "@com-foxglove-schemas//:cpp",
     ],
 )
-
