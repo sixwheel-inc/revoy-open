@@ -81,8 +81,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//third-party/build-proto-fds",
-        "@foxglove_schemas_protobuf//:frame_transforms_cc_proto",
-        "@foxglove_schemas_protobuf//:scene_update_cc_proto",
+        "@com-foxglove-schemas//:cpp",
         "@mcap",
         "@projectchrono",
     ],

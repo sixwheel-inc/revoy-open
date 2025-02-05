@@ -7,6 +7,6 @@ build:container \
     --extra_execution_platforms="//platforms/linux:clang" \
     --extra_toolchains="//toolchains/container:clang" \
     --extra_toolchains="//toolchains/container:py_toolchain" \
-    --disk_cache=~/.cache/bazel-disk \
+
 
 

@@ -47,13 +47,6 @@ jobs:
         if: ${{ steps.get-image.outcome != 'success' }}
         run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
 
-      - name: Setup a coarse Bazel Cache, to avoid rebuilding stable deps.
-        uses: bazel-contrib/setup-bazel@0.13.0
-        with:
-          disk-cache: true
-          external-cache: true
-          repository-cache: true
-
       - name: Clean up repo after building the image
         run: git clean -fdx . && git reset --hard
 

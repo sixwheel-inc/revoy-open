@@ -18,6 +18,8 @@ http_archive(
     ],
 )
 
+
+# Unfortunately we have to use cc_foreign to build projectchrono
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
 new_git_repository(
@@ -27,9 +29,34 @@ new_git_repository(
     remote = "https://github.com/ian-sixwheel/chrono",
 )
 
+
 # sometimes useful for local debugging
 # new_local_repository(
 #     name = "projectchrono",
 #     build_file = "@//third-party/projectchrono:projectchrono.BUILD.bazel",
 #     path = "~/chrono",
 # )
+
+# Unfortunately the BCR upstream foxglove-shemas seems to be broken, so we 
+# fallback to com_google_protobuf and com-foxglove-schema in WORKSPACE
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = "540200ef1bb101cf3f86f257f7947035313e4e485eea1f7eed9bc99dd0e2cb68",
+    strip_prefix = "protobuf-3.25.0",
+    # latest, as of 2023-11-02
+    urls = [
+        "https://github.com/protocolbuffers/protobuf/archive/v3.25.0.tar.gz",
+    ],
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+new_git_repository(
+    name = "com-foxglove-schemas",
+    build_file = "@//third-party/foxglove-schemas:com-foxglove-schemas.BUILD.bazel",
+    commit = "4fc6a4f7cdbd0280b5efca77a5b8808d0822fe7b",
+    remote = "https://github.com/foxglove/schemas",
+    strip_prefix = "schemas/proto/",
+)
