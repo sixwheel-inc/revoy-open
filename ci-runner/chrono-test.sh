@@ -4,6 +4,7 @@ set -ex
 
 echo "run scenarios and generate the mcaps"
 
+export BAZEL_BIN=$(bazel info bazel-bin)
 export REVOY_IRRLICHT_DISABLE=true
 
 SWERVE="bazel run \
