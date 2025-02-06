@@ -1,0 +1,8 @@
+cc_test(
+    name = "test-foxglove-schemas-cpp",
+    srcs = ["test-foxglove-schemas.cpp"],
+    deps = [
+        "@catch2//:catch2_main",
+        "@com-foxglove-schemas//:cpp",
+    ],
+)

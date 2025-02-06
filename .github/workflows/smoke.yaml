@@ -9,9 +9,10 @@ env:
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-  push:
-    branch:
-      - main
+
+  schedule:
+  # picked an non-round number to avoid peaks at top-of-hour
+  - cron: '13 9 * * 1,2,3,4,5'
 
 jobs:
   container-bazel-test:
@@ -38,21 +39,53 @@ jobs:
           tags: ${{ hashFiles('containers/buildah-image.sh') }}
           registry: ${{ env.IMAGE_REGISTRY }}
 
+      - name: Clean up repo after building the image.
+        if: ${{ steps.get-image.outcome != 'success' }}
+        run: git clean -fdx . && git reset --hard
+
       - name: (Debug) Use this URL to access this image.
         if: ${{ steps.get-image.outcome != 'success' }}
         run: echo "Image pushed to " ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
 
-      - name: Setup a coarse Bazel Cache, to avoid rebuilding stable deps.
-        uses: bazel-contrib/setup-bazel@0.13.0
+      - name: Cache bazel output, coarse cache hack to hopefully avoid rebuilding stable external deps.
+        uses: actions/cache@v4
+        id: bazel-cache
         with:
-          disk-cache: true
-          external-cache: true
-          repository-cache: true
+          path: |
+            ~/.cache/bazel/
+          key: bazel-${{ runner.os }}-${{ hashFiles('WORKSPACE', 'MODULES.bazel') }}
+          restore-keys: |
+            bazel-${{ runner.os }}-
 
       - name: Ensure code formatters (clang-tidy, black, buildifier) report no errors.
         run: ./.github/workflows/scripts/podman-check-formatting.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
 
-      - name: Run all unittests.
+      - name: Run unittests.
         run: ./.github/workflows/scripts/podman-unit-test.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
         shell: bash
 
+        # the following will only trigger on pull_request where the body 
+        # contains the string "run-chrono-tests", on main, or on the scheduled run.
+      - name: Check if PR Body contains 'run-chrono-test' trigger string
+        if: github.event_name == 'pull_request'
+        id: pr-comment-check
+        run: |
+          PR_BODY="${{ github.event.pull_request.body }}"
+          TRIGGER_STRING="run-chrono-tests"
+          if [[ "$PR_BODY" == *"$TRIGGER_STRING"* ]]; then
+            echo "PR description contains the trigger string '$TRIGGER_STRING', running the workflow...";
+            exit 0
+          else
+            echo "PR description does not contain the trigger string '$TRIGGER_STRING', exiting workflow.";
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Run tests that rely on projectchrono dependency
+        if: steps.pr-comment-check.outcome == 'success' || github.ref == 'refs/heads/main'
+        run: ./.github/workflows/scripts/podman-chrono-test.sh ${{ env.IMAGE_REGISTRY }}/revoy-open:${{ hashFiles('containers/buildah-image.sh') }}
+        shell: bash
+
+      - name: Remove large bazelisk installation files from bazel cache
+        if: always()
+        run: rm -rf ~/.cache/bazel/install

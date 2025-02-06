@@ -16,6 +16,7 @@ echo "Tag: ${tag}"
 main_packages="
   clang \
   git \
+  parallel \
 "
 
 python_packages="\

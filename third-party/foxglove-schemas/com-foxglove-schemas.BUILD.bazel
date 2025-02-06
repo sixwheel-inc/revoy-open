@@ -1,0 +1,30 @@
+
+filegroup(
+    name = "files",
+    srcs = glob(["foxglove/*.proto"]),
+    visibility = ["//visibility:public"],
+)
+
+proto_library(
+    name = "proto",
+    srcs = [
+      ":files",
+    ],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+        "@com_google_protobuf//:duration_proto",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_proto_library(
+    name = "cpp_proto",
+    deps = [":proto"],
+    # visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "cpp",
+    deps = [":cpp_proto"],
+    visibility = ["//visibility:public"],
+)
