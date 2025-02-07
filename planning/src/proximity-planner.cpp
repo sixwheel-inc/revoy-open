@@ -7,8 +7,6 @@
 
 #include <ompl/base/State.h>
 #include <ompl/control/planners/rrt/RRT.h>
-#include <ompl/control/planners/sst/SST.h>
-#include <ompl/control/spaces/DiscreteControlSpace.h>
 
 namespace planning {
 
@@ -25,15 +23,9 @@ ProximityPlanner::ProximityPlanner(const Bounds &bounds,
   ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_WARN);
 
   // set bounds for speed and steer
-  // ompl::base::RealVectorBounds cbounds(1);
-  // cbounds.low[0] = 0;
-  // cbounds.high[0] = 5;
-  // cbounds.low[1] = -(M_PI / 2.0) * .99;
-  // cbounds.high[1] = (M_PI / 2.0) * .99;
-  // cspace_->setBounds(cbounds);
+  cspace_->setBounds(0, 1);
 
   // set the state propagation routine
-
   setup_.setStatePropagator(propagator_);
 
   // set state validity checking for this space
@@ -89,22 +81,24 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
   // setup_.print();
   ompl::base::PlannerStatus solved = setup_.solve(0.1);
 
-  if (solved) {
+  if (solved != ompl::base::PlannerStatus::EXACT_SOLUTION) {
+    std::cout << "not exact solution: " << solved << std::endl;
+  } else {
     auto &solution = setup_.getSolutionPath();
     for (const auto baseState : solution.getStates()) {
       const auto state = baseState->as<RevoySpace::StateType>();
       path_.push_back({state->getX(), state->getY()});
     }
+
     if (solution.getStateCount() > 0) {
       const auto ctrl =
           solution.getControl(0)
               ->as<ompl::control::DiscreteControlSpace::ControlType>();
-      // controls_.speed = ctrl->values[0];
-      // controls_.steer = ctrl->values[1];
       controls_.speed = ctrl->value;
       controls_.steer = 0;
       controls_.duration = solution.getControlDuration(0);
     }
+
     FillGraph(graph_, setup_);
   }
   setup_.clear();
@@ -162,9 +156,13 @@ ProximityPlanner::Propagator::Propagator(
 void ProximityPlanner::Propagator::propagate(
     const ompl::base::State *start, const ompl::control::Control *control,
     const double duration, ompl::base::State *result) const {
-  RevoySpace::Propagate(
-      start->as<RevoySpace::StateType>(),
-      control->as<ompl::control::DiscreteControlSpace::ControlType>(),
-      bodyParams_, duration, result->as<RevoySpace::StateType>());
+
+  const auto ctrl =
+      control->as<ompl::control::DiscreteControlSpace::ControlType>();
+  const double speed = ctrl->value;
+  RevoySpace::Propagate(start->as<RevoySpace::StateType>(), {speed, 0},
+                        bodyParams_, duration,
+                        result->as<RevoySpace::StateType>());
 };
+
 } // namespace planning

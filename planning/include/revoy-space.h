@@ -9,7 +9,6 @@
 #include <ompl/base/spaces/SE2StateSpace.h>
 #include <ompl/base/spaces/SO2StateSpace.h>
 #include <ompl/control/SpaceInformation.h>
-#include <ompl/control/spaces/DiscreteControlSpace.h>
 
 namespace planning {
 
@@ -42,11 +41,9 @@ public:
   const ompl::base::RealVectorBounds &getBounds() const;
   void registerProjections() override;
 
-  static void
-  Propagate(const RevoySpace::StateType *state,
-            const ompl::control::DiscreteControlSpace::ControlType *ctrl,
-            const BodyParams &bodyParams, const double duration,
-            RevoySpace::StateType *result);
+  static void Propagate(const RevoySpace::StateType *state,
+                        const Controls &controls, const BodyParams &bodyParams,
+                        const double duration, RevoySpace::StateType *result);
 
   ompl::base::State *allocState() const override;
   void freeState(ompl::base::State *state) const override;

@@ -1,11 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstdint>
-#include <iostream>
 #include <memory>
 
 #include "planning/footprint-overlap.h"
-#include "planning/footprint-transform.h"
+#include "planning/make-scenario.h"
 #include "planning/mcap-utils.h"
 #include "planning/mock-revoy-ev.h"
 #include "planning/occupancy-grid.h"
@@ -99,8 +98,6 @@ TEST_CASE("test point in footprint") {
   }
 }
 
-Scenario MakeDisappearingObstacleScenario(double dir, double dist);
-
 TEST_CASE("test obstacle scenario parameterized direction and distance") {
 
   const double MIN_AVOIDABLE_DIST = (3 * sqrt(BodyParams().revoyLength));
@@ -167,45 +164,3 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
     }
   }
 }
-
-Scenario MakeDisappearingObstacleScenario(double dir, double dist) {
-
-  Scenario scenario;
-  scenario.name = "disappearing-obstacle_" + std::to_string(dir) + "_" +
-                  std::to_string(dist);
-
-  constexpr double DISAPPEAR = 5e6;
-  constexpr double DEBRIS = 0.5;
-
-  const HookedPose start = {{0, 0}, dir, dir};
-  const Point obst{dist * cos(dir), dist * sin(dir)};
-  const HookedPose goal = {obst, dir, dir};
-
-  /// this is useful while debugging the visuals, this should appear in the
-  /// correct place
-  const Point notInWay{dist * sin(dir), -dist * cos(dir)};
-
-  const Entity disappearing = {{obst, 0},
-                               {
-                                   {-DEBRIS, -DEBRIS},
-                                   {DEBRIS, -DEBRIS},
-                                   {DEBRIS, DEBRIS},
-                                   {-DEBRIS, DEBRIS},
-                               },
-                               DISAPPEAR};
-
-  const Entity notInTheWay = {{notInWay, 0},
-                              {
-                                  {-DEBRIS, -DEBRIS},
-                                  {DEBRIS, -DEBRIS},
-                                  {DEBRIS, DEBRIS},
-                                  {-DEBRIS, DEBRIS},
-                              }};
-
-  scenario.entities.push_back(disappearing);
-  scenario.entities.push_back(notInTheWay);
-  scenario.start = start;
-  scenario.goal = goal;
-
-  return scenario;
-};

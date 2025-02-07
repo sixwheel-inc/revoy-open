@@ -117,12 +117,37 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "make-scenario",
+    srcs = [
+        "src/make-scenario.cpp",
+    ],
+    hdrs = [
+        "include/make-scenario.h",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":types",
+    ],
+)
+
 cc_test(
     name = "test-simpl",
     srcs = ["test/test-simpl.cpp"],
     deps = [
+        ":make-scenario",
         ":simpl",
         "@catch2//:catch2_main",
+    ],
+)
+
+cc_binary(
+    name = "run-simpl",
+    srcs = ["src/run-simpl.cpp"],
+    deps = [
+        ":make-scenario",
+        ":simpl",
     ],
 )
 
