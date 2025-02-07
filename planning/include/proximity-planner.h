@@ -19,6 +19,7 @@ public:
   void plan(const HookedPose &start, const HookedPose &goal,
             std::shared_ptr<OccupancyGrid> grid);
   const Path &getLastSolution() const;
+  const Graph &getLastGraph() const;
   const Controls &getControls() const;
   const std::shared_ptr<OccupancyGrid> &getLastOccupancyGrid() const;
 
@@ -28,6 +29,7 @@ public:
 private:
   Bounds bounds_ = {};
   Path path_ = {};
+  Graph graph_ = {};
   Controls controls_ = {};
   std::shared_ptr<RevoySpace> space_;
   std::shared_ptr<ompl::control::DiscreteControlSpace> cspace_;

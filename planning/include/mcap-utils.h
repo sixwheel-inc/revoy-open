@@ -17,6 +17,7 @@ struct Scene {
   Scenario scenario;
   Footprints visibleEntities;
   std::shared_ptr<OccupancyGrid> grid;
+  Graph graph;
 };
 
 class McapWrapper {

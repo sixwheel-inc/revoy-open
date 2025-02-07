@@ -1,5 +1,6 @@
 #include "planning/proximity-planner.h"
 
+#include "planning/fill-graph.h"
 #include "planning/footprint-transform.h"
 #include "planning/occupancy-grid.h"
 #include "planning/types.h"
@@ -104,12 +105,14 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
       controls_.steer = 0;
       controls_.duration = solution.getControlDuration(0);
     }
+    FillGraph(graph_, setup_);
   }
   setup_.clear();
 }
 
 const Path &ProximityPlanner::getLastSolution() const { return path_; };
 const Controls &ProximityPlanner::getControls() const { return controls_; }
+const Graph &ProximityPlanner::getLastGraph() const { return graph_; }
 const std::shared_ptr<OccupancyGrid> &
 ProximityPlanner::getLastOccupancyGrid() const {
   return grid_;
