@@ -1,0 +1,23 @@
+load("@hedron_compile_commands//:refresh_compile_commands.bzl", "refresh_compile_commands")
+
+refresh_compile_commands(
+    name = "refresh_container_compile_commands",
+    targets = {
+        "//planning/...": "--config=container",
+        "//zaxis/...": "--config=container",
+        "//assembly/...": "--config=container",
+        "//helm/...": "--config=container",
+        "//revoy-chrono/...": "--config=container",
+    },
+)
+
+refresh_compile_commands(
+    name = "refresh_linux_compile_commands",
+    targets = {
+        "//planning/...": "--config=linux",
+        "//zaxis/...": "--config=linux",
+        "//assembly/...": "--config=linux",
+        "//helm/...": "--config=linux",
+        "//revoy-chrono/...": "--config=linux",
+    },
+)
