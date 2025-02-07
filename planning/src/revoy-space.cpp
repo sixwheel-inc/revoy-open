@@ -9,6 +9,7 @@ namespace planning {
 RevoySpace::RevoySpace() {
   setName("Revoy" + getName());
   type_ = STATE_SPACE_ONE_TRAILER;
+
   // the main body
   addSubspace(std::make_shared<ompl::base::SE2StateSpace>(), 1);
 
@@ -42,16 +43,13 @@ void RevoySpace::registerProjections() {
       as<ompl::base::SE2StateSpace>(0)->getDefaultProjection());
 }
 
-void RevoySpace::Propagate(
-    const RevoySpace::StateType *state,
-    const ompl::control::DiscreteControlSpace::ControlType *ctrl,
-    const BodyParams &bodyParams, const double duration,
-    RevoySpace::StateType *result) {
+void RevoySpace::Propagate(const RevoySpace::StateType *state,
+                           const Controls &controls,
+                           const BodyParams &bodyParams, const double duration,
+                           RevoySpace::StateType *result) {
 
-  // const double speed = ctrl->values[0];
-  // const double steer = ctrl->values[1];
-  const double speed = ctrl->value;
-  const double steer = 0;
+  const double speed = controls.speed;
+  const double steer = controls.steer;
 
   double x = state->getX();
   double y = state->getY();

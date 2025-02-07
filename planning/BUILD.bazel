@@ -8,6 +8,9 @@ cc_library(
         "include/planning.h",
         "include/proximity-planner.h",
     ],
+    copts = [
+        "-Werror",
+    ],
     include_prefix = "planning",
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
@@ -46,6 +49,9 @@ cc_library(
     hdrs = [
         "include/footprint-transform.h",
     ],
+    copts = [
+        "-Werror",
+    ],
     include_prefix = "planning",
     strip_include_prefix = "include",
     deps = [
@@ -60,6 +66,9 @@ cc_library(
     ],
     hdrs = [
         "include/occupancy-grid.h",
+    ],
+    copts = [
+        "-Werror",
     ],
     include_prefix = "planning",
     strip_include_prefix = "include",
@@ -76,6 +85,9 @@ cc_library(
     hdrs = [
         "include/types.h",
     ],
+    copts = [
+        "-Werror",
+    ],
     include_prefix = "planning",
     strip_include_prefix = "include",
     deps = [
@@ -86,6 +98,9 @@ cc_library(
 cc_test(
     name = "test-planning",
     srcs = ["test/test-planning.cpp"],
+    copts = [
+        "-Werror",
+    ],
     deps = [
         ":planning",
         "@catch2//:catch2_main",
@@ -108,6 +123,9 @@ cc_library(
         "include/simpl.h",
         "include/simpl-to-scene.h",
     ],
+    copts = [
+        "-Werror",
+    ],
     include_prefix = "planning",
     strip_include_prefix = "include",
     deps = [
@@ -117,12 +135,46 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "make-scenario",
+    srcs = [
+        "src/make-scenario.cpp",
+    ],
+    hdrs = [
+        "include/make-scenario.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":types",
+    ],
+)
+
 cc_test(
     name = "test-simpl",
     srcs = ["test/test-simpl.cpp"],
+    copts = [
+        "-Werror",
+    ],
     deps = [
+        ":make-scenario",
         ":simpl",
         "@catch2//:catch2_main",
+    ],
+)
+
+cc_binary(
+    name = "run-simpl",
+    srcs = ["src/run-simpl.cpp"],
+    copts = [
+        "-Werror",
+    ],
+    deps = [
+        ":make-scenario",
+        ":simpl",
     ],
 )
 
@@ -133,6 +185,10 @@ cc_library(
     ],
     hdrs = [
         "include/mcap-utils.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wno-gcc-compat",
     ],
     include_prefix = "planning",
     strip_include_prefix = "include",
