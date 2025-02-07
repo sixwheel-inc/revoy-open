@@ -28,14 +28,17 @@ namespace planning {
 
 namespace {
 
+/// eigen helper
 Eigen::Quaterniond MakeQuaternion(double angle);
 
+/// foxglove proto helpers
 foxglove::SceneUpdate MakeSceneUpdate(const Scene &scene, int64_t time);
 foxglove::LinePrimitive MakePath(const Path &path);
 foxglove::LinePrimitive MakeFootprint(const Footprint &footprint);
 foxglove::ArrowPrimitive MakeArrowPrimitive(const Pose &pose);
 foxglove::Grid MakeGrid(const std::shared_ptr<OccupancyGrid> &grid,
                         const HookedPose &revoyPose, int64_t writeTime);
+foxglove::SceneEntity MakeGraph(const Graph &graph, int64_t writeTime);
 
 } // namespace
 
@@ -157,7 +160,8 @@ foxglove::SceneUpdate MakeSceneUpdate(const Scene &scene, int64_t writeTime) {
   fgPath.mutable_lines()->Add(MakePath(scene.plannedPath));
   fgPath.mutable_lines()->Mutable(0)->mutable_color()->set_r(1);
   fgPath.mutable_lines()->Mutable(0)->mutable_color()->set_g(1);
-  fgPath.mutable_lines()->Mutable(0)->mutable_color()->set_a(0.5);
+  fgPath.mutable_lines()->Mutable(0)->mutable_color()->set_b(0);
+  fgPath.mutable_lines()->Mutable(0)->mutable_color()->set_a(1);
   sceneUpdate.mutable_entities()->Add(std::move(fgPath));
 
   const std::vector<Point> limits{
@@ -266,6 +270,9 @@ foxglove::SceneUpdate MakeSceneUpdate(const Scene &scene, int64_t writeTime) {
     fgTrailer.mutable_lines()->Mutable(0)->set_scale_invariant(false);
     sceneUpdate.mutable_entities()->Add(std::move(fgTrailer));
   }
+
+  sceneUpdate.mutable_entities()->Add(MakeGraph(scene.graph, writeTime));
+
   return sceneUpdate;
 }
 
@@ -273,8 +280,8 @@ foxglove::LinePrimitive MakePath(const std::vector<Point> &path) {
   foxglove::LinePrimitive line;
 
   line.set_type(foxglove::LinePrimitive::LINE_STRIP);
-  line.set_thickness(0.25);
-  line.set_scale_invariant(true);
+  line.set_thickness(0.1);
+  line.set_scale_invariant(false);
 
   for (const auto &point : path) {
     foxglove::Point3 fgPoint;
@@ -291,7 +298,7 @@ foxglove::LinePrimitive MakeFootprint(const Footprint &footprint) {
 
   line.set_type(foxglove::LinePrimitive::LINE_STRIP);
   line.set_thickness(0.25);
-  line.set_scale_invariant(true);
+  line.set_scale_invariant(false);
 
   for (const auto &point : footprint) {
     foxglove::Point3 fgPoint;
@@ -354,6 +361,61 @@ foxglove::Grid MakeGrid(const std::shared_ptr<OccupancyGrid> &grid,
   fgGrid.mutable_fields()->Add(std::move(fgFields));
   fgGrid.set_data(grid->fillData());
   return fgGrid;
+}
+
+foxglove::SceneEntity MakeGraph(const Graph &graph, int64_t writeTime) {
+  foxglove::SceneEntity fgGraph;
+  fgGraph.set_frame_id("fixed");
+  fgGraph.set_id("graph");
+  fgGraph.mutable_timestamp()->set_seconds(writeTime);
+
+  foxglove::LinePrimitive nodePoints;
+  nodePoints.set_type(foxglove::LinePrimitive::LINE_LIST);
+  nodePoints.set_thickness(0.1);
+  nodePoints.set_scale_invariant(false);
+
+  for (const auto &node : graph.nodes) {
+    foxglove::Point3 fgPoint;
+    fgPoint.set_x(node.x());
+    fgPoint.set_y(node.y());
+    fgPoint.set_z(0.0);
+    nodePoints.mutable_points()->Add(std::move(fgPoint));
+  }
+
+  nodePoints.mutable_color()->set_r(1.0);
+  nodePoints.mutable_color()->set_g(1.0);
+  nodePoints.mutable_color()->set_b(1.0);
+  nodePoints.mutable_color()->set_a(1.0);
+
+  fgGraph.mutable_lines()->Add(std::move(nodePoints));
+
+  for (const auto &[start_idx, end_idx] : graph.edges) {
+    foxglove::LinePrimitive edgeLine;
+    edgeLine.set_type(foxglove::LinePrimitive::LINE_LIST);
+    edgeLine.set_thickness(0.05);
+    edgeLine.set_scale_invariant(false);
+
+    foxglove::Point3 startPoint;
+    startPoint.set_x(graph.nodes[start_idx].x());
+    startPoint.set_y(graph.nodes[start_idx].y());
+    startPoint.set_z(0.0);
+    edgeLine.mutable_points()->Add(std::move(startPoint));
+
+    foxglove::Point3 endPoint;
+    endPoint.set_x(graph.nodes[end_idx].x());
+    endPoint.set_y(graph.nodes[end_idx].y());
+    endPoint.set_z(0.0);
+    edgeLine.mutable_points()->Add(std::move(endPoint));
+
+    edgeLine.mutable_color()->set_r(1.0);
+    edgeLine.mutable_color()->set_g(1.0);
+    edgeLine.mutable_color()->set_b(1.0);
+    edgeLine.mutable_color()->set_a(1.0);
+
+    fgGraph.mutable_lines()->Add(std::move(edgeLine));
+  }
+
+  return fgGraph;
 }
 
 } // namespace

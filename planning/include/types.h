@@ -95,4 +95,9 @@ struct Controls {
   double duration = 0;
 };
 
+struct Graph {
+  std::vector<Point> nodes;
+  std::vector<std::tuple<size_t, size_t>> edges;
+};
+
 } // namespace planning

@@ -23,9 +23,11 @@ cc_library(
 cc_library(
     name = "revoy-space",
     srcs = [
+        "src/fill-graph.cpp",
         "src/revoy-space.cpp",
     ],
     hdrs = [
+        "include/fill-graph.h",
         "include/revoy-space.h",
     ],
     include_prefix = "planning",
