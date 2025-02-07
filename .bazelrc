@@ -9,4 +9,10 @@ build:container \
     --extra_toolchains="//toolchains/container:py_toolchain" \
 
 
+# Local Linux build, using toolchains directly installed on the host machine
+build:linux \
+    --extra_execution_platforms="//platforms/linux:clang" \
+    --extra_toolchains="//toolchains/linux:clang" \
+    --extra_toolchains="//toolchains/linux:py_toolchain" \
+
 

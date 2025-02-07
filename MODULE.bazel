@@ -10,3 +10,14 @@ bazel_dep(name = "boost.dynamic_bitset", version = "1.83.0")
 bazel_dep(name = "boost.graph", version = "1.83.0")
 bazel_dep(name = "boost.filesystem", version = "1.83.0")
 bazel_dep(name = "boost.serialization", version = "1.83.0")
+
+## dev env, allows lsp features for C++
+# Hedron's Compile Commands Extractor for Bazel
+# https://github.com/hedronvision/bazel-compile-commands-extractor
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+
+git_override(
+    commit = "4f28899228fb3ad0126897876f147ca15026151e",
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+)
