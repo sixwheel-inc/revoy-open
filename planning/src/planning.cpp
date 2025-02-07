@@ -44,7 +44,7 @@ static const HookedPose GOAL{{1, 0}, 0, 0};
 Plan GetNextPlan(const Perception *perception) {
 
   if (!perception) {
-    return {0, 0};
+    return {};
   }
 
   std::cout << "perception->numBytes: " << std::to_string(perception->numBytes)

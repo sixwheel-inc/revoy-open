@@ -79,10 +79,9 @@ const Footprints Simpl::getVisibleFootprints(int64_t time) const {
 }
 
 Footprints MockProximityObserver::getFootprints(const Scenario &scenario,
-                                                const HookedPose &pose,
+                                                const HookedPose &_,
                                                 int64_t time) const {
   // 5 m, TODO use units.h
-  static const double PROXIMITY_DISTANCE = 50;
   Footprints footprints;
   for (const auto &entity : scenario.entities) {
     if (static_cast<double>(time) >
