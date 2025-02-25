@@ -104,9 +104,14 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
   const double EAST = 0;
   const double SOUTH_WEST = -3 * M_PI / 4.0;
 
-  static const std::vector<double> DIRS{EAST, SOUTH_WEST};
-  static const std::vector<double> DISTS{MIN_AVOIDABLE_DIST - 1,
-                                         MIN_AVOIDABLE_DIST + 1};
+  static const std::vector<double> DIRS{
+      EAST,
+      SOUTH_WEST,
+  };
+  static const std::vector<double> DISTS{
+      MIN_AVOIDABLE_DIST - 1,
+      MIN_AVOIDABLE_DIST + 1,
+  };
 
   for (const double dir : DIRS) {
     for (const double dist : DISTS) {
@@ -122,6 +127,7 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
       bool collision = false;
       double actualSpeed = 0;
       double actualSteer = 0;
+      double maxActualSpeed = 0;
 
       while (time <=
                  scenario.timeParams.timeout + scenario.timeParams.startTime &&
@@ -149,14 +155,21 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
         actualSpeed = controls.speed;
         actualSteer = controls.steer;
 
+        maxActualSpeed = std::fmax(maxActualSpeed, actualSpeed);
+
         // tick
         time += scenario.timeParams.dt;
       }
 
       if (dist > MIN_AVOIDABLE_DIST) {
         CHECK(!collision);
+        CHECK(maxActualSpeed > 0);
       } else {
         CHECK(collision);
+
+        // NOTE: purposefully using == to compare double: the value should be
+        // set to exactly 0
+        CHECK(maxActualSpeed == 0);
       }
 
       simpl.reset();

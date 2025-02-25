@@ -1,4 +1,5 @@
 #include "planning/revoy-space.h"
+#include "planning/mock-revoy-ev.h"
 
 #include <ompl/tools/config/MagicConstants.h>
 
@@ -44,31 +45,25 @@ void RevoySpace::registerProjections() {
 }
 
 void RevoySpace::Propagate(const RevoySpace::StateType *state,
-                           const Controls &controls,
-                           const BodyParams &bodyParams, const double duration,
+                           const Controls &controls, const double duration,
                            RevoySpace::StateType *result) {
 
-  const double speed = controls.speed;
-  const double steer = controls.steer;
+  // propagation startint pose
+  const HookedPose start{
+      {state->getX(), state->getY()},
+      state->getYaw(),
+      state->getTrailerYaw(),
+  };
 
-  double x = state->getX();
-  double y = state->getY();
-  double yaw = state->getYaw();
-  double trailerYaw = state->getTrailerYaw();
+  // propagation result
+  MockRevoyEv revoyEv(start);
+  revoyEv.update(controls, duration);
+  const HookedPose end = revoyEv.getHookedPose();
 
-  // integrate to try to make it more accurate
-  static const double K = 100;
-  const double travel = speed * duration / K;
-  for (int i = 0; i < K; i++) {
-    x += travel * cos(yaw);
-    y += travel * sin(yaw);
-    yaw += travel * tan(steer);
-    trailerYaw -= sin(trailerYaw - yaw) * duration / K;
-  }
-
-  result->setXY(x, y);
-  result->setYaw(yaw);
-  result->setTrailerYaw(trailerYaw);
+  // set state values
+  result->setXY(end.position.x(), end.position.y());
+  result->setYaw(end.yaw);
+  result->setTrailerYaw(end.trailerYaw);
 }
 
 double RevoySpace::StateType::getX() const {

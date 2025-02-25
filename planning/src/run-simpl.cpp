@@ -10,20 +10,27 @@ using namespace planning;
 
 int main(int argc, char **argv) {
 
+  // TODO: the Yard scenaro is currently just a placeholder
+  // replace with argparse logic and choose a scenario
   const std::vector<std::string> args(argv + 1, argv + argc);
-
   const Scenario scenario = MakeYardScenario();
 
+  // initialize simulator
   std::unique_ptr<Simpl> simpl = std::make_unique<Simpl>(scenario);
 
+  // initialize debug visualizer
   std::unique_ptr<McapWrapper> mcapWrapper =
-      std::make_unique<McapWrapper>("catch2-" + scenario.name + ".mcap");
+      std::make_unique<McapWrapper>("run-simpl-" + scenario.name + ".mcap");
 
+  // setup simulation boundary / exit conditions
   int64_t time = scenario.timeParams.startTime;
   bool collision = false;
+
+  // setup simulation initial condition
   double actualSpeed = 0;
   double actualSteer = 0;
 
+  // loop until scenario is done or timeout
   while (time <= scenario.timeParams.timeout + scenario.timeParams.startTime &&
          !simpl->isDone()) {
 
@@ -45,16 +52,19 @@ int main(int argc, char **argv) {
     // steer
     const Controls controls = simpl->getProximityPlanner().getControls();
 
+    // will be used to plan the next frame
     actualSpeed = controls.speed;
     actualSteer = controls.steer;
 
-    // tick
+    // tick time
     time += scenario.timeParams.dt;
   }
 
+  // graceful exit
   simpl.reset();
   mcapWrapper.reset();
 
+  // error report
   std::cout << "collision: " << (collision ? "yes" : "no") << std::endl;
-  return 0;
+  return collision ? 0 : 1;
 }

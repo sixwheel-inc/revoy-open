@@ -33,9 +33,13 @@ cc_library(
         "include/fill-graph.h",
         "include/revoy-space.h",
     ],
+    copts = [
+        "-Werror",
+    ],
     include_prefix = "planning",
     strip_include_prefix = "include",
     deps = [
+        ":mock-revoy-ev",
         ":types",
         "@ompl",
     ],
@@ -112,14 +116,12 @@ cc_library(
     srcs = [
         "src/add-footprint-to-grid.cpp",
         "src/footprint-overlap.cpp",
-        "src/mock-revoy-ev.cpp",
         "src/simpl.cpp",
         "src/simpl-to-scene.cpp",
     ],
     hdrs = [
         "include/add-footprint-to-grid.h",
         "include/footprint-overlap.h",
-        "include/mock-revoy-ev.h",
         "include/simpl.h",
         "include/simpl-to-scene.h",
     ],
@@ -130,8 +132,28 @@ cc_library(
     strip_include_prefix = "include",
     deps = [
         ":mcap-utils",
+        ":mock-revoy-ev",
         ":planning",
         "@clipper2",
+    ],
+)
+
+cc_library(
+    name = "mock-revoy-ev",
+    srcs = [
+        "src/mock-revoy-ev.cpp",
+    ],
+    hdrs = [
+        "include/mock-revoy-ev.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    strip_include_prefix = "include",
+    deps = [
+        ":footprint-transform",
+        ":types",
     ],
 )
 

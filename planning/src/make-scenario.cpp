@@ -10,7 +10,7 @@ Scenario MakeDisappearingObstacleScenario(double dir, double dist) {
   scenario.name = "disappearing-obstacle_" + std::to_string(dir) + "_" +
                   std::to_string(dist);
 
-  constexpr double DISAPPEAR = 5e6;
+  constexpr double DISAPPEAR = 1e6;
   constexpr double DEBRIS = 0.5;
 
   const HookedPose start = {{0, 0}, dir, dir};
@@ -42,6 +42,7 @@ Scenario MakeDisappearingObstacleScenario(double dir, double dist) {
   scenario.entities.push_back(notInTheWay);
   scenario.start = start;
   scenario.goal = goal;
+  scenario.timeParams.timeout = DISAPPEAR * 2;
 
   return scenario;
 };
