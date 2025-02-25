@@ -53,6 +53,10 @@ public:
   /// NOTE: assumes this footprint coords are in the Occupancy Grid frame
   bool areFootprintsOccupied(const Footprints &footprints) const;
 
+  /// check if point is occupied, true if point falls into occupied cell OR
+  /// outside grid bounds.
+  bool isPointOccupied(const Point &point) const;
+
   /// useful for debugging smaller unittests with fewer cells
   void print() const;
 

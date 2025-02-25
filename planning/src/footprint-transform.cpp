@@ -63,6 +63,12 @@ Footprint ReverseTransformFootprint(const Footprint &box, const Pose &pose) {
   return footprint;
 }
 
+Point ReverseTransformPoint(const Point &point_, const Pose &pose) {
+  Point point = point_ - pose.position;
+  point = RotatePoint(point, -pose.yaw);
+  return point;
+}
+
 Footprints FootprintsFromPose(const HookedPose &pose,
                               const BodyParams &params) {
 

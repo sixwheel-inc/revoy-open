@@ -76,8 +76,7 @@ public:
   /// action the Robot could take
   class Propagator : public ompl::control::StatePropagator {
   public:
-    Propagator(const std::shared_ptr<ompl::control::SpaceInformation> si,
-               const BodyParams &bodyParams);
+    Propagator(const std::shared_ptr<ompl::control::SpaceInformation> si);
 
     /// called by OMPL during search
     virtual void propagate(const ompl::base::State *start,

@@ -13,15 +13,6 @@ Scene SimplToScene(std::unique_ptr<Simpl> &simpl, int64_t time) {
   scene.visibleEntities = simpl->getVisibleFootprints(time);
   scene.grid = simpl->getProximityPlanner().getLastOccupancyGrid();
 
-  // std::cout << "pose: " <<
-  // std::to_string(simpl->getRevoyEv().getHookedPose().position.x()) << ", "
-  //           <<
-  //           std::to_string(simpl->getRevoyEv().getHookedPose().position.y())
-  //           <<
-  //           ", "
-  //           << std::to_string(simpl->getRevoyEv().getHookedPose().yaw) <<
-  //           std::endl;
-
   return scene;
 }
 } // namespace planning

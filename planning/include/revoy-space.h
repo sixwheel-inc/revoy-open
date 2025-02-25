@@ -42,8 +42,8 @@ public:
   void registerProjections() override;
 
   static void Propagate(const RevoySpace::StateType *state,
-                        const Controls &controls, const BodyParams &bodyParams,
-                        const double duration, RevoySpace::StateType *result);
+                        const Controls &controls, const double duration,
+                        RevoySpace::StateType *result);
 
   ompl::base::State *allocState() const override;
   void freeState(ompl::base::State *state) const override;

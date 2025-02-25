@@ -6,21 +6,17 @@
 
 namespace planning {
 
-class MockProximityObserver {
-public:
-  Footprints getFootprints(const Scenario &scenario, const HookedPose &pose,
-                           int64_t time) const;
-};
-
+// Simpl: Simulator for OMPL, focusing on SE(2) and similar "2D" spaces
 class Simpl {
   Scenario scenario_;
-  MockProximityObserver proximityObserver_;
   MockRevoyEv revoyEv_;
   ProximityPlanner proximityPlanner_;
 
 public:
   Simpl() = delete;
   Simpl(Scenario scenario);
+
+  // called in a tight loop
   void update(int64_t time, double actualSpeed, double actualSteer);
   const Footprints getVisibleFootprints(int64_t time) const;
   const ProximityPlanner &getProximityPlanner() const;

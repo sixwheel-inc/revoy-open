@@ -156,4 +156,9 @@ bool OccupancyGrid::isIdxInGrid(const Idx &idx) const {
   return idx.i < N_ && idx.j < M_;
 };
 
+bool OccupancyGrid::isPointOccupied(const Point &point) const {
+  const Idx idx = pointToIdx(point);
+  return isIdxInGrid(idx) && isOccupied(idx);
+}
+
 } // namespace planning
