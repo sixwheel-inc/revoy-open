@@ -3,7 +3,6 @@
 
 #include "planning/footprint-overlap.h"
 #include "planning/simpl-mcap.h"
-#include "planning/simpl-to-scene.h"
 #include "planning/simpl.h"
 
 using namespace planning;
@@ -38,8 +37,7 @@ int main(int argc, char **argv) {
     simpl->update(time, actualSpeed, actualSteer);
 
     // record mcap
-    const Scene scene = SimplToScene(simpl, time);
-    mcap->write(scene, time);
+    mcap->write(*simpl, time);
 
     // Use full polygon intersection, from the occupancy grid used in
     // planning. this check fails correctly for edge cases not caught by

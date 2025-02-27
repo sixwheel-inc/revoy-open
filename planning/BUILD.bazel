@@ -123,13 +123,11 @@ cc_library(
         "src/add-footprint-to-grid.cpp",
         "src/footprint-overlap.cpp",
         "src/simpl.cpp",
-        "src/simpl-to-scene.cpp",
     ],
     hdrs = [
         "include/add-footprint-to-grid.h",
         "include/footprint-overlap.h",
         "include/simpl.h",
-        "include/simpl-to-scene.h",
     ],
     copts = [
         "-Werror",
@@ -139,7 +137,6 @@ cc_library(
     deps = [
         ":mock-revoy-ev",
         ":planning",
-        ":simpl-mcap",
         "@clipper2",
     ],
 )
@@ -190,6 +187,7 @@ cc_test(
     deps = [
         ":make-scenario",
         ":simpl",
+        ":simpl-mcap",
         "@catch2//:catch2_main",
     ],
 )
@@ -203,6 +201,7 @@ cc_binary(
     deps = [
         ":make-scenario",
         ":simpl",
+        ":simpl-mcap",
     ],
 )
 
@@ -233,9 +232,7 @@ cc_library(
     include_prefix = "planning",
     strip_include_prefix = "include",
     deps = [
-        ":footprint-transform",
-        ":occupancy-grid",
-        ":revoy-space",
+        ":simpl",
         "//third-party/build-proto-fds",
         ## for some reason the upstream BCR foxglove broke, use WORKSPACE
         # "@foxglove_schemas_protobuf//:grid_cc_proto",

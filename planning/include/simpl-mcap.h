@@ -1,6 +1,8 @@
 #pragma once
 
+#include "planning/include/simpl.h"
 #include "planning/occupancy-grid.h"
+#include "planning/simpl.h"
 #include "planning/types.h"
 
 #include <map>
@@ -35,11 +37,13 @@ public:
   SimplMcap(const std::string outputFilename);
   ~SimplMcap();
 
+  void write(const Simpl &simpl, int64_t writeTime);
+
+private:
   // TODO: scene is a leaky abstaction, move it into SimplMcap, and pass
   // a reference to Simpl here instead of Scene
   void write(const Scene &scene, int64_t writeTime);
 
-private:
   // file handle, file writes
   mcap::McapWriter writer;
 
@@ -56,6 +60,11 @@ private:
   // convenience wrapper to write data to a topic that was added prior.
   void writeTopic(const std::string &serialized, const std::string &topic,
                   double writeTime);
+
+  // some massaging is required to go from Simpl to visualizable things,
+  // e.g. some paths need to be interpolated (to show curvature), graph nodes
+  // need to be collected, etc.
+  static Scene SimplToScene(const Simpl &simpl, int64_t time);
 };
 
 } // namespace planning

@@ -116,6 +116,11 @@ SimplMcap::SimplMcap(const std::string outputFilename) {
            SCENARIO_TOPIC);
 }
 
+void SimplMcap::write(const Simpl &simpl, int64_t time) {
+  const Scene scene = SimplToScene(simpl, time);
+  write(scene, time);
+}
+
 void SimplMcap::write(const Scene &scene, int64_t writeTime) {
 
   // add Revoy and other agent footprints to scene
@@ -515,4 +520,23 @@ foxglove::Grid MakeGrid(const std::shared_ptr<OccupancyGrid> &grid,
 }
 
 } // namespace
+
+Scene SimplMcap::SimplToScene(const Simpl &simpl, int64_t time) {
+
+  Scene scene;
+  scene.scenario = simpl.getScenario();
+  scene.revoy = simpl.getRevoyEv().getBody(scene.scenario.bodyParams);
+  scene.revoyPose = simpl.getRevoyEv().getHookedPose();
+  scene.visibleEntities = simpl.getVisibleFootprints(time);
+  scene.grid = simpl.getProximityPlanner().getLastOccupancyGrid();
+
+  // TODO for now this is hardcoded but we can make this configurable
+  scene.planners["proximity"].solution =
+      simpl.getProximityPlanner().getLastSolution();
+  scene.planners["proximity"].graph =
+      simpl.getProximityPlanner().getLastGraph();
+
+  return scene;
+}
+
 } // namespace planning

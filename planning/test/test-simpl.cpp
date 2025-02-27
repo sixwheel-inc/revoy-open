@@ -8,7 +8,6 @@
 #include "planning/mock-revoy-ev.h"
 #include "planning/occupancy-grid.h"
 #include "planning/simpl-mcap.h"
-#include "planning/simpl-to-scene.h"
 #include "planning/simpl.h"
 #include "planning/types.h"
 
@@ -137,8 +136,7 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
         simpl->update(time, actualSpeed, actualSteer);
 
         // record mcap
-        const Scene scene = SimplToScene(simpl, time);
-        mcap->write(scene, time);
+        mcap->write(*simpl, time);
 
         // Use full polygon intersection, from the occupancy grid used in
         // planning. this check fails correctly for edge cases not caught by
