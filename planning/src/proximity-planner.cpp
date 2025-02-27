@@ -133,6 +133,9 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
 }
 
 // simple getters
+const ompl::control::SimpleSetup &ProximityPlanner::getSetup() const {
+  return setup_;
+}
 const Path &ProximityPlanner::getLastSolution() const { return path_; };
 const Controls &ProximityPlanner::getControls() const { return controls_; }
 const Graph &ProximityPlanner::getLastGraph() const { return graph_; }

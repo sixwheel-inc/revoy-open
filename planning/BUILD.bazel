@@ -1,11 +1,17 @@
 cc_library(
     name = "planning",
     srcs = [
+        # "src/coarse-planner.cpp",
+        # "src/control-planner.cpp",
         "src/planning.cpp",
+        # "src/planning-pipeline.cpp",
         "src/proximity-planner.cpp",
     ],
     hdrs = [
+        # "include/coarse-planner.h",
+        # "include/control-planner.h",
         "include/planning.h",
+        # "include/planning-pipeline.h",
         "include/proximity-planner.h",
     ],
     copts = [
@@ -131,9 +137,9 @@ cc_library(
     include_prefix = "planning",
     strip_include_prefix = "include",
     deps = [
-        ":mcap-utils",
         ":mock-revoy-ev",
         ":planning",
+        ":simpl-mcap",
         "@clipper2",
     ],
 )
@@ -200,13 +206,25 @@ cc_binary(
     ],
 )
 
+# cc_binary(
+#     name = "run-control-planner",
+#     srcs = ["src/run-control-planner.cpp"],
+#     copts = [
+#         "-Werror",
+#     ],
+#     deps = [
+#         ":make-scenario",
+#         ":simpl",
+#     ],
+# )
+
 cc_library(
-    name = "mcap-utils",
+    name = "simpl-mcap",
     srcs = [
-        "src/mcap-utils.cpp",
+        "src/simpl-mcap.cpp",
     ],
     hdrs = [
-        "include/mcap-utils.h",
+        "include/simpl-mcap.h",
     ],
     copts = [
         "-Werror",

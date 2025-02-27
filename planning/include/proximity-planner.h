@@ -24,6 +24,7 @@ public:
             std::shared_ptr<OccupancyGrid> grid);
 
   /// getters used for output / debug
+  const ompl::control::SimpleSetup &getSetup() const;
   const Path &getLastSolution() const;
   const Graph &getLastGraph() const;
   const Controls &getControls() const;
