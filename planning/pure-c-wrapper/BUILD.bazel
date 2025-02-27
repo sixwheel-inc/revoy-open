@@ -1,0 +1,29 @@
+cc_library(
+    name = "pure-c-wrapper",
+    srcs = [
+        "planning.cpp",
+    ],
+    hdrs = [
+        "planning.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//planning/ompl-planners:proximity-planner",
+    ],
+)
+
+cc_test(
+    name = "test-pure-c-wrapper",
+    srcs = ["test-planning.cpp"],
+    copts = [
+        "-Werror",
+    ],
+    deps = [
+        ":pure-c-wrapper",
+        "@catch2//:catch2_main",
+    ],
+)

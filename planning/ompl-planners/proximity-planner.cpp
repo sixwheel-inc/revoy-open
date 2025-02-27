@@ -2,8 +2,8 @@
 
 #include "planning/fill-graph.h"
 #include "planning/footprint-transform.h"
-#include "planning/include/revoy-space.h"
 #include "planning/occupancy-grid.h"
+#include "planning/revoy-space.h"
 #include "planning/types.h"
 
 #include <ompl/base/State.h>

@@ -1,0 +1,17 @@
+cc_library(
+    name = "make-scenario",
+    srcs = [
+        "make-scenario.cpp",
+    ],
+    hdrs = [
+        "make-scenario.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning/simpl:__subpackages__"],
+    deps = [
+        "//planning/types",
+    ],
+)

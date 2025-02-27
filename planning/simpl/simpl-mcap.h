@@ -1,6 +1,5 @@
 #pragma once
 
-#include "planning/include/simpl.h"
 #include "planning/occupancy-grid.h"
 #include "planning/simpl.h"
 #include "planning/types.h"

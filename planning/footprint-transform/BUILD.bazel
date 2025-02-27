@@ -1,0 +1,17 @@
+cc_library(
+    name = "footprint-transform",
+    srcs = [
+        "footprint-transform.cpp",
+    ],
+    hdrs = [
+        "footprint-transform.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        "//planning/types",
+    ],
+)

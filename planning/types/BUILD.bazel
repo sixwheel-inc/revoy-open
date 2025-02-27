@@ -1,0 +1,17 @@
+cc_library(
+    name = "types",
+    srcs = [
+        "types.cpp",
+    ],
+    hdrs = [
+        "types.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        "@eigen",
+    ],
+)

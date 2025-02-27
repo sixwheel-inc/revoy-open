@@ -1,6 +1,6 @@
 #include "planning/mock-revoy-ev.h"
 #include "planning/footprint-transform.h"
-#include "planning/include/mock-revoy-ev.h"
+#include "planning/mock-revoy-ev.h"
 #include "planning/types.h"
 
 #include <iostream>
