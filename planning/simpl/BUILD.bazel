@@ -10,6 +10,7 @@ cc_library(
         "-Werror",
     ],
     include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
     deps = [
         "//planning/mock-revoy-ev",
         "//planning/ompl-planners:proximity-planner",
@@ -24,8 +25,8 @@ cc_test(
     ],
     deps = [
         ":simpl",
-        ":simpl-mcap",
         "//planning/make-scenario",
+        "//planning/simpl-mcap",
         "@catch2//:catch2_main",
     ],
 )
@@ -38,36 +39,7 @@ cc_binary(
     ],
     deps = [
         ":simpl",
-        ":simpl-mcap",
         "//planning/make-scenario",
-    ],
-)
-
-cc_library(
-    name = "simpl-mcap",
-    srcs = [
-        "foxglove-utils.cpp",
-        "simpl-mcap.cpp",
-    ],
-    hdrs = [
-        "foxglove-utils.h",
-        "simpl-mcap.h",
-    ],
-    copts = [
-        "-Werror",
-        "-Wno-gcc-compat",
-    ],
-    include_prefix = "planning",
-    deps = [
-        ":simpl",
-        "//planning/collisions",
-        "//planning/ompl-planners:proximity-planner",
-        "//third-party/build-proto-fds",
-        ## for some reason the upstream BCR foxglove broke, use WORKSPACE
-        # "@foxglove_schemas_protobuf//:grid_cc_proto",
-        # "@foxglove_schemas_protobuf//:poses_in_frame_cc_proto",
-        # "@foxglove_schemas_protobuf//:scene_update_cc_proto",
-        "@com-foxglove-schemas//:cpp",
-        "@mcap",
+        "//planning/simpl-mcap",
     ],
 )
