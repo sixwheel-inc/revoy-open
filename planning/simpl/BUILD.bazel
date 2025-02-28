@@ -1,0 +1,45 @@
+cc_library(
+    name = "simpl",
+    srcs = [
+        "simpl.cpp",
+    ],
+    hdrs = [
+        "simpl.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        "//planning/mock-revoy-ev",
+        "//planning/planners",
+    ],
+)
+
+cc_test(
+    name = "test-simpl",
+    srcs = ["test-simpl.cpp"],
+    copts = [
+        "-Werror",
+    ],
+    deps = [
+        ":simpl",
+        "//planning/make-scenario",
+        "//planning/simpl-mcap",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_binary(
+    name = "run-simpl",
+    srcs = ["run-simpl.cpp"],
+    copts = [
+        "-Werror",
+    ],
+    deps = [
+        ":simpl",
+        "//planning/make-scenario",
+        "//planning/simpl-mcap",
+    ],
+)

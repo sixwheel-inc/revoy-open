@@ -2,8 +2,7 @@
 #include "planning/make-scenario.h"
 
 #include "planning/footprint-overlap.h"
-#include "planning/mcap-utils.h"
-#include "planning/simpl-to-scene.h"
+#include "planning/simpl-mcap.h"
 #include "planning/simpl.h"
 
 using namespace planning;
@@ -19,8 +18,8 @@ int main(int argc, char **argv) {
   std::unique_ptr<Simpl> simpl = std::make_unique<Simpl>(scenario);
 
   // initialize debug visualizer
-  std::unique_ptr<McapWrapper> mcapWrapper =
-      std::make_unique<McapWrapper>("run-simpl-" + scenario.name + ".mcap");
+  std::unique_ptr<SimplMcap> mcap =
+      std::make_unique<SimplMcap>("run-simpl-" + scenario.name + ".mcap");
 
   // setup simulation boundary / exit conditions
   int64_t time = scenario.timeParams.startTime;
@@ -38,8 +37,7 @@ int main(int argc, char **argv) {
     simpl->update(time, actualSpeed, actualSteer);
 
     // record mcap
-    const Scene scene = SimplToScene(simpl, time);
-    mcapWrapper->write(scene, time);
+    mcap->write(*simpl, time);
 
     // Use full polygon intersection, from the occupancy grid used in
     // planning. this check fails correctly for edge cases not caught by
@@ -62,7 +60,7 @@ int main(int argc, char **argv) {
 
   // graceful exit
   simpl.reset();
-  mcapWrapper.reset();
+  mcap.reset();
 
   // error report
   std::cout << "collision: " << (collision ? "yes" : "no") << std::endl;

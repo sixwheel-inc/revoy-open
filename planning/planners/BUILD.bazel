@@ -1,0 +1,40 @@
+cc_library(
+    name = "revoy-space",
+    srcs = [
+        "revoy-space.cpp",
+    ],
+    hdrs = [
+        "revoy-space.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    deps = [
+        "//planning/mock-revoy-ev",
+        "//planning/types",
+        "@ompl",
+    ],
+)
+
+cc_library(
+    name = "planners",
+    srcs = [
+        "proximity-planner.cpp",
+    ],
+    hdrs = [
+        "fill-graph.h",
+        "proximity-planner.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        ":revoy-space",
+        "//planning/collisions",
+        "//planning/types",
+        "@ompl",
+    ],
+)

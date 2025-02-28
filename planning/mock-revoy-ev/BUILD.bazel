@@ -1,0 +1,18 @@
+cc_library(
+    name = "mock-revoy-ev",
+    srcs = [
+        "mock-revoy-ev.cpp",
+    ],
+    hdrs = [
+        "mock-revoy-ev.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        "//planning/collisions",
+        "//planning/types",
+    ],
+)

@@ -1,0 +1,24 @@
+cc_library(
+    name = "collisions",
+    srcs = [
+        "add-footprint-to-grid.cpp",
+        "footprint-overlap.cpp",
+        "footprint-transform.cpp",
+        "occupancy-grid.cpp",
+    ],
+    hdrs = [
+        "add-footprint-to-grid.h",
+        "footprint-overlap.h",
+        "footprint-transform.h",
+        "occupancy-grid.h",
+    ],
+    copts = [
+        "-Werror",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        "//planning/types",
+        "@clipper2",
+    ],
+)

@@ -2,8 +2,8 @@
 
 #include "planning/fill-graph.h"
 #include "planning/footprint-transform.h"
-#include "planning/include/revoy-space.h"
 #include "planning/occupancy-grid.h"
+#include "planning/revoy-space.h"
 #include "planning/types.h"
 
 #include <ompl/base/State.h>
@@ -133,6 +133,9 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
 }
 
 // simple getters
+const ompl::control::SimpleSetup &ProximityPlanner::getSetup() const {
+  return setup_;
+}
 const Path &ProximityPlanner::getLastSolution() const { return path_; };
 const Controls &ProximityPlanner::getControls() const { return controls_; }
 const Graph &ProximityPlanner::getLastGraph() const { return graph_; }

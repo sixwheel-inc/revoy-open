@@ -1,0 +1,23 @@
+cc_library(
+    name = "simpl-mcap",
+    srcs = [
+        "foxglove-utils.cpp",
+        "simpl-mcap.cpp",
+    ],
+    hdrs = [
+        "foxglove-utils.h",
+        "simpl-mcap.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wno-gcc-compat",
+    ],
+    include_prefix = "planning",
+    visibility = ["//planning:__subpackages__"],
+    deps = [
+        "//planning/simpl",
+        "//third-party/build-proto-fds",
+        "@com-foxglove-schemas//:cpp",
+        "@mcap",
+    ],
+)
