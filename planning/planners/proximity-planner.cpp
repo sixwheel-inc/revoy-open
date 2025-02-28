@@ -1,6 +1,5 @@
 #include "planning/proximity-planner.h"
 
-#include "planning/fill-graph.h"
 #include "planning/footprint-transform.h"
 #include "planning/occupancy-grid.h"
 #include "planning/revoy-space.h"
@@ -121,11 +120,6 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
       controls_.speed = ctrl->value;
       controls_.duration = solution.getControlDuration(0);
     }
-
-    // TODO: costly, make this behavior toggleable (useful during development
-    // and debugging)
-    FillGraph<ompl::control::SimpleSetup, RevoySpace::StateType>(graph_,
-                                                                 setup_);
   }
 
   // this resets the goals, search nodes, and path, but not the planner settings

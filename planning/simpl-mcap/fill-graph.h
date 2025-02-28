@@ -14,8 +14,8 @@ void FillGraph(Graph &graph, const SimpleSetup &setup) {
   ompl::base::PlannerData pd(setup.getSpaceInformation());
   setup.getPlannerData(pd);
 
-  // graph.edges.clear();
-  // graph.nodes.clear();
+  graph.edges.clear();
+  graph.nodes.clear();
   const size_t prevSize = graph.nodes.size();
   graph.nodes.reserve(prevSize + pd.numVertices());
 

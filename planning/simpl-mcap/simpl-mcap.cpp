@@ -1,6 +1,8 @@
 #define MCAP_IMPLEMENTATION
 
 #include "planning/simpl-mcap.h"
+#include "planning/fill-graph.h"
+#include "planning/fill-path.h"
 #include "planning/foxglove-utils.h"
 #include "planning/occupancy-grid.h"
 
@@ -170,10 +172,13 @@ Scene SimplMcap::SimplToScene(const Simpl &simpl, int64_t time) {
   scene.grid = simpl.getProximityPlanner().getLastOccupancyGrid();
 
   // TODO for now this is hardcoded but we can make this configurable
-  scene.planners["proximity"].solution =
-      simpl.getProximityPlanner().getLastSolution();
-  scene.planners["proximity"].graph =
-      simpl.getProximityPlanner().getLastGraph();
+  FillPath<ompl::control::SimpleSetup, RevoySpace::StateType>(
+      scene.planners["proximity"].solution,
+      simpl.getProximityPlanner().getSetup());
+
+  FillGraph<ompl::control::SimpleSetup, RevoySpace::StateType>(
+      scene.planners["proximity"].graph,
+      simpl.getProximityPlanner().getSetup());
 
   return scene;
 }

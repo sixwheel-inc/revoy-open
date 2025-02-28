@@ -23,7 +23,6 @@ cc_library(
         "proximity-planner.cpp",
     ],
     hdrs = [
-        "fill-graph.h",
         "proximity-planner.h",
     ],
     copts = [
