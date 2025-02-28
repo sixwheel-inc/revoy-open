@@ -51,9 +51,11 @@ cc_binary(
 cc_library(
     name = "simpl-mcap",
     srcs = [
+        "foxglove-utils.cpp",
         "simpl-mcap.cpp",
     ],
     hdrs = [
+        "foxglove-utils.h",
         "simpl-mcap.h",
     ],
     copts = [
