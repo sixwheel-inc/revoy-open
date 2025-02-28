@@ -13,7 +13,7 @@ cc_library(
     visibility = ["//planning:__subpackages__"],
     deps = [
         "//planning/mock-revoy-ev",
-        "//planning/ompl-planners:proximity-planner",
+        "//planning/planners",
     ],
 )
 

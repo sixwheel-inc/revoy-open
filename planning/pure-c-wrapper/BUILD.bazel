@@ -12,7 +12,7 @@ cc_library(
     include_prefix = "planning",
     visibility = ["//visibility:public"],
     deps = [
-        "//planning/ompl-planners:proximity-planner",
+        "//planning/planners",
     ],
 )
 

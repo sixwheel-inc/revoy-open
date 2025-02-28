@@ -18,7 +18,7 @@ cc_library(
 )
 
 cc_library(
-    name = "proximity-planner",
+    name = "planners",
     srcs = [
         "proximity-planner.cpp",
     ],
