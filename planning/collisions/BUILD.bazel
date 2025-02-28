@@ -22,3 +22,15 @@ cc_library(
         "@clipper2",
     ],
 )
+
+cc_test(
+    name = "test-collisions",
+    srcs = ["test-collisions.cpp"],
+    copts = [
+        "-Werror",
+    ],
+    deps = [
+        ":collisions",
+        "@catch2//:catch2_main",
+    ],
+)
