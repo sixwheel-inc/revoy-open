@@ -12,7 +12,7 @@ cc_library(
     include_prefix = "planning",
     visibility = ["//planning:__subpackages__"],
     deps = [
-        "//planning/footprint-transform",
+        "//planning/collisions",
         "//planning/types",
     ],
 )

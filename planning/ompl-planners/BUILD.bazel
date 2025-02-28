@@ -30,11 +30,10 @@ cc_library(
         "-Werror",
     ],
     include_prefix = "planning",
-    visibility = ["//visibility:public"],
+    visibility = ["//planning:__subpackages__"],
     deps = [
         ":revoy-space",
-        "//planning/footprint-transform",
-        "//planning/occupancy-grid",
+        "//planning/collisions",
         "//planning/types",
         "@ompl",
     ],

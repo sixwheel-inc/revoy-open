@@ -1,13 +1,9 @@
 cc_library(
     name = "simpl",
     srcs = [
-        "add-footprint-to-grid.cpp",
-        "footprint-overlap.cpp",
         "simpl.cpp",
     ],
     hdrs = [
-        "add-footprint-to-grid.h",
-        "footprint-overlap.h",
         "simpl.h",
     ],
     copts = [
@@ -17,7 +13,6 @@ cc_library(
     deps = [
         "//planning/mock-revoy-ev",
         "//planning/ompl-planners:proximity-planner",
-        "@clipper2",
     ],
 )
 
@@ -65,8 +60,7 @@ cc_library(
     include_prefix = "planning",
     deps = [
         ":simpl",
-        "//planning/footprint-transform",
-        "//planning/occupancy-grid",
+        "//planning/collisions",
         "//planning/ompl-planners:proximity-planner",
         "//third-party/build-proto-fds",
         ## for some reason the upstream BCR foxglove broke, use WORKSPACE
