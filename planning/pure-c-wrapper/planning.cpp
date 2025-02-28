@@ -47,16 +47,17 @@ Plan GetNextPlan(const Perception *perception) {
     return {};
   }
 
-  std::cout << "perception->numBytes: " << std::to_string(perception->numBytes)
-            << std::endl;
-  std::cout << "perception->numBytesInRow: "
-            << std::to_string(perception->numBytesInRow) << std::endl;
-  std::cout << "perception->bitsPerMeter: "
-            << std::to_string(perception->bitsPerMeter) << std::endl;
-  std::cout << "perception->offsetX: " << std::to_string(perception->offsetX)
-            << std::endl;
-  std::cout << "perception->offsetY: " << std::to_string(perception->offsetY)
-            << std::endl;
+  // std::cout << "perception->numBytes: " <<
+  // std::to_string(perception->numBytes)
+  //           << std::endl;
+  // std::cout << "perception->numBytesInRow: "
+  //           << std::to_string(perception->numBytesInRow) << std::endl;
+  // std::cout << "perception->bitsPerMeter: "
+  //           << std::to_string(perception->bitsPerMeter) << std::endl;
+  // std::cout << "perception->offsetX: " << std::to_string(perception->offsetX)
+  //           << std::endl;
+  // std::cout << "perception->offsetY: " << std::to_string(perception->offsetY)
+  //           << std::endl;
 
   /// prevent divide-by-zero, assert because execution won't be possible
   assert(perception->numBytes != 0);
@@ -71,19 +72,18 @@ Plan GetNextPlan(const Perception *perception) {
   const double offsetX = perception->offsetX;
   const double offsetY = perception->offsetY;
 
-  std::cout << "N: " << std::to_string(N) << std::endl;
-  std::cout << "M: " << std::to_string(M) << std::endl;
-  std::cout << "cellX: " << std::to_string(cellX) << std::endl;
-  std::cout << "cellY: " << std::to_string(cellY) << std::endl;
-  std::cout << "offsetX: " << std::to_string(offsetX) << std::endl;
-  std::cout << "offsetY: " << std::to_string(offsetY) << std::endl;
+  // std::cout << "N: " << std::to_string(N) << std::endl;
+  // std::cout << "M: " << std::to_string(M) << std::endl;
+  // std::cout << "cellX: " << std::to_string(cellX) << std::endl;
+  // std::cout << "cellY: " << std::to_string(cellY) << std::endl;
+  // std::cout << "offsetX: " << std::to_string(offsetX) << std::endl;
+  // std::cout << "offsetY: " << std::to_string(offsetY) << std::endl;
 
   grid->reset(perception->occupancy, perception->numBytes, N, M, cellX, cellY,
               offsetX, offsetY);
   planner->plan(START, GOAL, grid);
 
   const Controls controls = planner->getControls();
-  const auto &grid = planner->getLastOccupancyGrid();
 
   Plan plan = {.setSpeed = controls.speed,
                .setSteer = controls.steer,

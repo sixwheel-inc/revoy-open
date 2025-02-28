@@ -11,34 +11,47 @@
 
 namespace planning {
 
-// Rasterizes the polygons into the grid
-static const std::shared_ptr<OccupancyGrid>
-FootprintsToOccupancyGrid(const Footprints &footprints, const HookedPose &pose);
+namespace {
+/// 200 * 200 cells = 40000 cells
+/// 0.1m * 200 cells means grid total diagonal is ~28m, effective range ~14m
+static constexpr uint16_t NUM_CELLS = 200;
+static constexpr double CELL_LENGTH = 0.1; // meters
+static constexpr double GRID_OFFSET =
+    CELL_LENGTH * ((float)NUM_CELLS) / 2.0; // meters
+
+} // namespace
 
 Simpl::Simpl(Scenario scenario)
     : scenario_(scenario), revoyEv_(scenario_.start),
-      proximityPlanner_(scenario_.bounds, scenario_.bodyParams) {};
+      proximityPlanner_(scenario_.bounds, scenario_.bodyParams),
+      grid_(std::make_shared<OccupancyGrid>(NUM_CELLS, NUM_CELLS, CELL_LENGTH,
+                                            CELL_LENGTH, GRID_OFFSET,
+                                            GRID_OFFSET)) {};
 
-void Simpl::update(int64_t time, double actualSpeed, double actualSteer) {
-
-  // get controls from caller
-  const Controls controls = {actualSpeed, actualSteer};
-
-  // update revoy w/ controls
-  revoyEv_.update(controls, scenario_.timeParams.dt / 1e6);
+void Simpl::update(int64_t time) {
 
   // get simulated obstacle footprints from simulated observers
   const Footprints footprints = getVisibleFootprints(time);
 
   // insert footprints into occupancy grid
-  const std::shared_ptr<OccupancyGrid> grid =
-      FootprintsToOccupancyGrid(footprints, revoyEv_.getHookedPose());
+  FootprintsToOccupancyGrid(*grid_, footprints, revoyEv_.getHookedPose());
 
   // update plan w/ latest revoy pose and occupancy grid
-  proximityPlanner_.plan(revoyEv_.getHookedPose(), scenario_.goal, grid);
+  proximityPlanner_.plan(revoyEv_.getHookedPose(), scenario_.goal, grid_);
+
+  // get controls from caller
+  const Controls controls = proximityPlanner_.getControls();
+
+  // update revoy w/ controls
+  revoyEv_.update(controls, scenario_.timeParams.dt / 1e6);
 }
 
-bool Simpl::isDone() const {
+bool Simpl::isDone(int64_t time) const {
+
+  // timeout
+  if (time > scenario_.timeParams.timeout + scenario_.timeParams.startTime) {
+    return true;
+  }
 
   // revoy footprint at the origin, used to check against grid cells
   const Footprints bodyZero = FootprintsFromPose(
@@ -49,7 +62,7 @@ bool Simpl::isDone() const {
 
   // check if revoy footprint cells are occupied by obstacles,
   // if so, then no planning is possible.
-  const auto grid = proximityPlanner_.getLastOccupancyGrid();
+  const auto grid = getLastOccupancyGrid();
   bool invalidStart = false;
   if (grid && grid->areFootprintsOccupied(bodyZero)) {
     invalidStart = true;
@@ -83,37 +96,14 @@ const Footprints Simpl::getVisibleFootprints(int64_t time) const {
   return footprints;
 }
 
+const std::shared_ptr<OccupancyGrid> &Simpl::getLastOccupancyGrid() const {
+  return grid_;
+}
+
 const Scenario &Simpl::getScenario() const { return scenario_; }
 const ProximityPlanner &Simpl::getProximityPlanner() const {
   return proximityPlanner_;
 };
 const MockRevoyEv &Simpl::getRevoyEv() const { return revoyEv_; };
-
-const std::shared_ptr<OccupancyGrid>
-FootprintsToOccupancyGrid(const Footprints &footprints,
-                          const HookedPose &pose) {
-
-  /// 200 * 200 cells = 40000 cells
-  /// 0.1m * 200 cells means grid total diagonal is ~28m, effective range ~14m
-  static constexpr uint16_t NUM_CELLS = 200;
-  static constexpr double CELL_LENGTH = 0.1; // meters
-  static constexpr double GRID_OFFSET =
-      CELL_LENGTH * ((float)NUM_CELLS) / 2.0; // meters
-
-  // TODO: make this reuse old memory instead of reallocating
-  auto grid = std::make_shared<OccupancyGrid>(
-      NUM_CELLS, NUM_CELLS, CELL_LENGTH, CELL_LENGTH, GRID_OFFSET, GRID_OFFSET);
-
-  /// loop over footprints and rasterize them into the grid
-  for (const Footprint &footprint : footprints) {
-
-    const Pose unhookedPose = {pose.position, pose.yaw};
-    const auto footprintInRevoyFrame =
-        ReverseTransformFootprint(footprint, unhookedPose);
-
-    AddFootprintToGrid(footprintInRevoyFrame, *grid);
-  }
-  return grid;
-}
 
 } // namespace planning

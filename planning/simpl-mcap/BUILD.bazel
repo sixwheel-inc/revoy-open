@@ -5,6 +5,8 @@ cc_library(
         "simpl-mcap.cpp",
     ],
     hdrs = [
+        "fill-graph.h",
+        "fill-path.h",
         "foxglove-utils.h",
         "simpl-mcap.h",
     ],

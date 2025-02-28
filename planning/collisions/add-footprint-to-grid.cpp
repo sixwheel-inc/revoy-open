@@ -1,11 +1,29 @@
 #include "planning/add-footprint-to-grid.h"
 
 #include "planning/footprint-overlap.h"
+#include "planning/footprint-transform.h"
 #include "planning/occupancy-grid.h"
 
 #include <deque>
 
 namespace planning {
+
+void FootprintsToOccupancyGrid(OccupancyGrid &grid,
+                               const Footprints &footprints,
+                               const HookedPose &pose) {
+
+  grid.reset();
+
+  /// loop over footprints and rasterize them into the grid
+  for (const Footprint &footprint : footprints) {
+
+    const Pose unhookedPose = {pose.position, pose.yaw};
+    const auto footprintInRevoyFrame =
+        ReverseTransformFootprint(footprint, unhookedPose);
+
+    AddFootprintToGrid(footprintInRevoyFrame, grid);
+  }
+}
 
 namespace {
 using Idx = OccupancyGrid::Idx;

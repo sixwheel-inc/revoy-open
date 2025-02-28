@@ -1,6 +1,5 @@
 #include "planning/proximity-planner.h"
 
-#include "planning/fill-graph.h"
 #include "planning/footprint-transform.h"
 #include "planning/occupancy-grid.h"
 #include "planning/revoy-space.h"
@@ -61,6 +60,8 @@ ProximityPlanner::ProximityPlanner(const Bounds &bounds,
 void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
                             std::shared_ptr<OccupancyGrid> grid) {
 
+  setup_.clear();
+
   // create a start state
   ompl::base::ScopedState<RevoySpace> start(space_);
   start->setX(start_.position.x());
@@ -78,16 +79,9 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
   // update start and goal
   setup_.setStartAndGoalStates(start, goal, 1);
 
-  // clear these, we will fill them with the results of the planner
-  path_.clear();
-  controls_ = {};
-
-  // caching this for debugging and visualization
-  grid_ = grid;
-
   // updating the collision checker with the latest occupancy grid
   const Pose &gridPose{{start->getX(), start->getY()}, start->getYaw()};
-  validityChecker_->setOccupancyGrid(grid_, gridPose);
+  validityChecker_->setOccupancyGrid(grid, gridPose);
 
   // ompl setup
   setup_.setup();
@@ -100,48 +94,42 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
   if (solved != ompl::base::PlannerStatus::EXACT_SOLUTION &&
       solved != ompl::base::PlannerStatus::APPROXIMATE_SOLUTION) {
     std::cout << "not exact solution: " << solved << std::endl;
-  } else {
-
-    // since a solution was found, update the path for visualization purposes
-    auto &solution = setup_.getSolutionPath();
-    for (const auto baseState : solution.getStates()) {
-      const auto state = baseState->as<RevoySpace::StateType>();
-      path_.push_back({state->getX(), state->getY()});
-    }
-
-    // since a solution was found, update controls
-    if (solution.getStateCount() > 0) {
-
-      // capture results for output to downstream controls system.
-      // we will use the very first control action, since we will re-plan
-      // and get new controls before this duration runs out.
-      const auto ctrl =
-          solution.getControl(0)
-              ->as<ompl::control::DiscreteControlSpace::ControlType>();
-      controls_.speed = ctrl->value;
-      controls_.duration = solution.getControlDuration(0);
-    }
-
-    // TODO: costly, make this behavior toggleable (useful during development
-    // and debugging)
-    FillGraph<ompl::control::SimpleSetup, RevoySpace::StateType>(graph_,
-                                                                 setup_);
   }
-
-  // this resets the goals, search nodes, and path, but not the planner settings
-  setup_.clear();
 }
 
 // simple getters
 const ompl::control::SimpleSetup &ProximityPlanner::getSetup() const {
   return setup_;
 }
-const Path &ProximityPlanner::getLastSolution() const { return path_; };
-const Controls &ProximityPlanner::getControls() const { return controls_; }
-const Graph &ProximityPlanner::getLastGraph() const { return graph_; }
-const std::shared_ptr<OccupancyGrid> &
-ProximityPlanner::getLastOccupancyGrid() const {
-  return grid_;
+
+// get the controls from the solution of the last plan.
+// capture results for output to downstream controls system.
+// we will use the very first control action, since we will re-plan
+// and get new controls before this duration runs out.
+const Controls ProximityPlanner::getControls() const {
+
+  Controls out;
+
+  // no solution was found, output default controls, all 0s
+  if (!setup_.haveSolutionPath()) {
+    return out;
+  }
+
+  // since a solution was found, update controls
+  auto &solution = setup_.getSolutionPath();
+
+  // ensure solution has elements in it, before indexing into 0th element
+  if (solution.getStateCount() > 0) {
+
+    const auto ctrl =
+        solution.getControl(0)
+            ->as<ompl::control::DiscreteControlSpace::ControlType>();
+    out.speed = ctrl->value;
+    out.steer = 0;
+    out.duration = solution.getControlDuration(0);
+  }
+
+  return out;
 }
 
 // Validity Checker: collision detection, bounds checking

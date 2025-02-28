@@ -11,4 +11,11 @@ namespace planning {
 /// NOTE: assumes this footprint coords are in the Occupancy Grid frame
 void AddFootprintToGrid(const Footprint &footprint, OccupancyGrid &grid);
 
+// Rasterizes the polygons into the grid, using AddFootprintToGrid in a loop,
+// and after transforming the footprints into the pose frame (i.e. put them in
+// the grid relative to the pose).
+void FootprintsToOccupancyGrid(OccupancyGrid &grid,
+                               const Footprints &footprints,
+                               const HookedPose &pose);
+
 }; // namespace planning

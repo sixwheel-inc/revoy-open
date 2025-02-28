@@ -10,8 +10,6 @@
 #include "planning/simpl.h"
 #include "planning/types.h"
 
-#include "planning/add-footprint-to-grid.h"
-
 using namespace planning;
 
 TEST_CASE("test obstacle scenario parameterized direction and distance") {
@@ -41,16 +39,12 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
 
       int64_t time = scenario.timeParams.startTime;
       bool collision = false;
-      double actualSpeed = 0;
-      double actualSteer = 0;
       double maxActualSpeed = 0;
 
-      while (time <=
-                 scenario.timeParams.timeout + scenario.timeParams.startTime &&
-             !simpl->isDone()) {
+      while (!simpl->isDone(time)) {
 
         // sim + plan
-        simpl->update(time, actualSpeed, actualSteer);
+        simpl->update(time);
 
         // record mcap
         mcap->write(*simpl, time);
@@ -67,10 +61,7 @@ TEST_CASE("test obstacle scenario parameterized direction and distance") {
         // steer
         const Controls controls = simpl->getProximityPlanner().getControls();
 
-        actualSpeed = controls.speed;
-        actualSteer = controls.steer;
-
-        maxActualSpeed = std::fmax(maxActualSpeed, actualSpeed);
+        maxActualSpeed = std::fmax(maxActualSpeed, controls.speed);
 
         // tick
         time += scenario.timeParams.dt;
