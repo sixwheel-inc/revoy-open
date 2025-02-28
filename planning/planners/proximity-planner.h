@@ -23,23 +23,23 @@ public:
   void plan(const HookedPose &start, const HookedPose &goal,
             std::shared_ptr<OccupancyGrid> grid);
 
-  /// getters used for output / debug
-  const ompl::control::SimpleSetup &getSetup() const;
-  const Path &getLastSolution() const;
-  const Graph &getLastGraph() const;
-  const Controls &getControls() const;
-  const std::shared_ptr<OccupancyGrid> &getLastOccupancyGrid() const;
+  // output to controls.
+  // capture results for output to downstream controls system.
+  // we will use the very first control action, since we will re-plan
+  // and get new controls before this duration runs out.
+  const Controls getControls() const;
 
   /// ompl hooks that we define, pass data / query the StateSpace
   class ValidityChecker;
   class Propagator;
 
+  /// getters used for debug
+  const ompl::control::SimpleSetup &getSetup() const;
+  const std::shared_ptr<OccupancyGrid> &getLastOccupancyGrid() const;
+
 private:
   /// Params, Inputs, Outputs
   Bounds bounds_ = {};
-  Path path_ = {};
-  Graph graph_ = {};
-  Controls controls_ = {};
 
   /// OMPL stuff
   std::shared_ptr<RevoySpace> space_;

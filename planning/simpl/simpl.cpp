@@ -19,13 +19,7 @@ Simpl::Simpl(Scenario scenario)
     : scenario_(scenario), revoyEv_(scenario_.start),
       proximityPlanner_(scenario_.bounds, scenario_.bodyParams) {};
 
-void Simpl::update(int64_t time, double actualSpeed, double actualSteer) {
-
-  // get controls from caller
-  const Controls controls = {actualSpeed, actualSteer};
-
-  // update revoy w/ controls
-  revoyEv_.update(controls, scenario_.timeParams.dt / 1e6);
+void Simpl::update(int64_t time) {
 
   // get simulated obstacle footprints from simulated observers
   const Footprints footprints = getVisibleFootprints(time);
@@ -36,9 +30,20 @@ void Simpl::update(int64_t time, double actualSpeed, double actualSteer) {
 
   // update plan w/ latest revoy pose and occupancy grid
   proximityPlanner_.plan(revoyEv_.getHookedPose(), scenario_.goal, grid);
+
+  // get controls from caller
+  const Controls controls = proximityPlanner_.getControls();
+
+  // update revoy w/ controls
+  revoyEv_.update(controls, scenario_.timeParams.dt / 1e6);
 }
 
-bool Simpl::isDone() const {
+bool Simpl::isDone(int64_t time) const {
+
+  // timeout
+  if (time > scenario_.timeParams.timeout + scenario_.timeParams.startTime) {
+    return true;
+  }
 
   // revoy footprint at the origin, used to check against grid cells
   const Footprints bodyZero = FootprintsFromPose(

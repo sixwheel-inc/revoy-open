@@ -17,12 +17,12 @@ public:
   Simpl(Scenario scenario);
 
   // called in a tight loop
-  void update(int64_t time, double actualSpeed, double actualSteer);
+  void update(int64_t time);
   const Footprints getVisibleFootprints(int64_t time) const;
   const ProximityPlanner &getProximityPlanner() const;
   const MockRevoyEv &getRevoyEv() const;
   const Scenario &getScenario() const;
-  bool isDone() const;
+  bool isDone(int64_t time) const;
 };
 
 } // namespace planning

@@ -25,16 +25,11 @@ int main(int argc, char **argv) {
   int64_t time = scenario.timeParams.startTime;
   bool collision = false;
 
-  // setup simulation initial condition
-  double actualSpeed = 0;
-  double actualSteer = 0;
-
   // loop until scenario is done or timeout
-  while (time <= scenario.timeParams.timeout + scenario.timeParams.startTime &&
-         !simpl->isDone()) {
+  while (!simpl->isDone(time)) {
 
     // sim + plan
-    simpl->update(time, actualSpeed, actualSteer);
+    simpl->update(time);
 
     // record mcap
     mcap->write(*simpl, time);
@@ -45,14 +40,6 @@ int main(int argc, char **argv) {
     const Footprints revoy = simpl->getRevoyEv().getBody(scenario.bodyParams);
     const Footprints obsts = simpl->getVisibleFootprints(time);
     collision |= IsBodyCollidingAnyObstacles(revoy, obsts);
-
-    // for this test, instantly apply speed / steer to actual speed /
-    // steer
-    const Controls controls = simpl->getProximityPlanner().getControls();
-
-    // will be used to plan the next frame
-    actualSpeed = controls.speed;
-    actualSteer = controls.steer;
 
     // tick time
     time += scenario.timeParams.dt;
