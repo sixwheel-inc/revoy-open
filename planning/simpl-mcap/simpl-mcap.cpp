@@ -169,7 +169,7 @@ Scene SimplMcap::SimplToScene(const Simpl &simpl, int64_t time) {
   scene.revoy = simpl.getRevoyEv().getBody(scene.scenario.bodyParams);
   scene.revoyPose = simpl.getRevoyEv().getHookedPose();
   scene.visibleEntities = simpl.getVisibleFootprints(time);
-  scene.grid = simpl.getProximityPlanner().getLastOccupancyGrid();
+  scene.grid = simpl.getLastOccupancyGrid();
 
   // TODO for now this is hardcoded but we can make this configurable
   FillPath<ompl::control::SimpleSetup, RevoySpace::StateType>(

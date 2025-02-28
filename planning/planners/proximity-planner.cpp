@@ -79,12 +79,9 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
   // update start and goal
   setup_.setStartAndGoalStates(start, goal, 1);
 
-  // caching this for debugging and visualization
-  grid_ = grid;
-
   // updating the collision checker with the latest occupancy grid
   const Pose &gridPose{{start->getX(), start->getY()}, start->getYaw()};
-  validityChecker_->setOccupancyGrid(grid_, gridPose);
+  validityChecker_->setOccupancyGrid(grid, gridPose);
 
   // ompl setup
   setup_.setup();
@@ -104,10 +101,6 @@ void ProximityPlanner::plan(const HookedPose &start_, const HookedPose &_,
 const ompl::control::SimpleSetup &ProximityPlanner::getSetup() const {
   return setup_;
 }
-const std::shared_ptr<OccupancyGrid> &
-ProximityPlanner::getLastOccupancyGrid() const {
-  return grid_;
-}
 
 // get the controls from the solution of the last plan.
 // capture results for output to downstream controls system.
@@ -115,15 +108,12 @@ ProximityPlanner::getLastOccupancyGrid() const {
 // and get new controls before this duration runs out.
 const Controls ProximityPlanner::getControls() const {
 
-  std::cout << "get controls" << std::endl;
   Controls out;
 
   // no solution was found, output default controls, all 0s
   if (!setup_.haveSolutionPath()) {
     return out;
   }
-
-  std::cout << "has solution" << std::endl;
 
   // since a solution was found, update controls
   auto &solution = setup_.getSolutionPath();
@@ -139,7 +129,6 @@ const Controls ProximityPlanner::getControls() const {
     out.duration = solution.getControlDuration(0);
   }
 
-  std::cout << std::format("solution {} {}", out.speed, out.steer) << std::endl;
   return out;
 }
 

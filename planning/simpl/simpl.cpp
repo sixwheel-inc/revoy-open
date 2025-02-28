@@ -25,11 +25,10 @@ void Simpl::update(int64_t time) {
   const Footprints footprints = getVisibleFootprints(time);
 
   // insert footprints into occupancy grid
-  const std::shared_ptr<OccupancyGrid> grid =
-      FootprintsToOccupancyGrid(footprints, revoyEv_.getHookedPose());
+  grid_ = FootprintsToOccupancyGrid(footprints, revoyEv_.getHookedPose());
 
   // update plan w/ latest revoy pose and occupancy grid
-  proximityPlanner_.plan(revoyEv_.getHookedPose(), scenario_.goal, grid);
+  proximityPlanner_.plan(revoyEv_.getHookedPose(), scenario_.goal, grid_);
 
   // get controls from caller
   const Controls controls = proximityPlanner_.getControls();
@@ -54,7 +53,7 @@ bool Simpl::isDone(int64_t time) const {
 
   // check if revoy footprint cells are occupied by obstacles,
   // if so, then no planning is possible.
-  const auto grid = proximityPlanner_.getLastOccupancyGrid();
+  const auto grid = getLastOccupancyGrid();
   bool invalidStart = false;
   if (grid && grid->areFootprintsOccupied(bodyZero)) {
     invalidStart = true;
@@ -86,6 +85,10 @@ const Footprints Simpl::getVisibleFootprints(int64_t time) const {
     footprints.push_back(tfFootprint);
   }
   return footprints;
+}
+
+const std::shared_ptr<OccupancyGrid> &Simpl::getLastOccupancyGrid() const {
+  return grid_;
 }
 
 const Scenario &Simpl::getScenario() const { return scenario_; }

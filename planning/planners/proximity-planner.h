@@ -35,7 +35,6 @@ public:
 
   /// getters used for debug
   const ompl::control::SimpleSetup &getSetup() const;
-  const std::shared_ptr<OccupancyGrid> &getLastOccupancyGrid() const;
 
 private:
   /// Params, Inputs, Outputs
@@ -47,9 +46,6 @@ private:
   ompl::control::SimpleSetup setup_;
   std::shared_ptr<ValidityChecker> validityChecker_;
   std::shared_ptr<Propagator> propagator_;
-
-  /// Obstacles
-  std::shared_ptr<OccupancyGrid> grid_;
 
 public:
   /// OMPL will use this to decide if a State in the StateSpace is

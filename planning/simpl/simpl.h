@@ -12,6 +12,9 @@ class Simpl {
   MockRevoyEv revoyEv_;
   ProximityPlanner proximityPlanner_;
 
+  // using shared_ptr because of OMPL design patterns
+  std::shared_ptr<OccupancyGrid> grid_ = nullptr;
+
 public:
   Simpl() = delete;
   Simpl(Scenario scenario);
@@ -19,6 +22,7 @@ public:
   // called in a tight loop
   void update(int64_t time);
   const Footprints getVisibleFootprints(int64_t time) const;
+  const std::shared_ptr<OccupancyGrid> &getLastOccupancyGrid() const;
   const ProximityPlanner &getProximityPlanner() const;
   const MockRevoyEv &getRevoyEv() const;
   const Scenario &getScenario() const;
