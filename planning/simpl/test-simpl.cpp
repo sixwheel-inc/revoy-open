@@ -10,8 +10,6 @@
 #include "planning/simpl.h"
 #include "planning/types.h"
 
-#include "planning/add-footprint-to-grid.h"
-
 using namespace planning;
 
 TEST_CASE("test obstacle scenario parameterized direction and distance") {
