@@ -11,13 +11,22 @@
 
 namespace planning {
 
-// Rasterizes the polygons into the grid
-static const std::shared_ptr<OccupancyGrid>
-FootprintsToOccupancyGrid(const Footprints &footprints, const HookedPose &pose);
+namespace {
+/// 200 * 200 cells = 40000 cells
+/// 0.1m * 200 cells means grid total diagonal is ~28m, effective range ~14m
+static constexpr uint16_t NUM_CELLS = 200;
+static constexpr double CELL_LENGTH = 0.1; // meters
+static constexpr double GRID_OFFSET =
+    CELL_LENGTH * ((float)NUM_CELLS) / 2.0; // meters
+
+} // namespace
 
 Simpl::Simpl(Scenario scenario)
     : scenario_(scenario), revoyEv_(scenario_.start),
-      proximityPlanner_(scenario_.bounds, scenario_.bodyParams) {};
+      proximityPlanner_(scenario_.bounds, scenario_.bodyParams),
+      grid_(std::make_shared<OccupancyGrid>(NUM_CELLS, NUM_CELLS, CELL_LENGTH,
+                                            CELL_LENGTH, GRID_OFFSET,
+                                            GRID_OFFSET)) {};
 
 void Simpl::update(int64_t time) {
 
@@ -25,7 +34,7 @@ void Simpl::update(int64_t time) {
   const Footprints footprints = getVisibleFootprints(time);
 
   // insert footprints into occupancy grid
-  grid_ = FootprintsToOccupancyGrid(footprints, revoyEv_.getHookedPose());
+  FootprintsToOccupancyGrid(*grid_, footprints, revoyEv_.getHookedPose());
 
   // update plan w/ latest revoy pose and occupancy grid
   proximityPlanner_.plan(revoyEv_.getHookedPose(), scenario_.goal, grid_);
@@ -96,32 +105,5 @@ const ProximityPlanner &Simpl::getProximityPlanner() const {
   return proximityPlanner_;
 };
 const MockRevoyEv &Simpl::getRevoyEv() const { return revoyEv_; };
-
-const std::shared_ptr<OccupancyGrid>
-FootprintsToOccupancyGrid(const Footprints &footprints,
-                          const HookedPose &pose) {
-
-  /// 200 * 200 cells = 40000 cells
-  /// 0.1m * 200 cells means grid total diagonal is ~28m, effective range ~14m
-  static constexpr uint16_t NUM_CELLS = 200;
-  static constexpr double CELL_LENGTH = 0.1; // meters
-  static constexpr double GRID_OFFSET =
-      CELL_LENGTH * ((float)NUM_CELLS) / 2.0; // meters
-
-  // TODO: make this reuse old memory instead of reallocating
-  auto grid = std::make_shared<OccupancyGrid>(
-      NUM_CELLS, NUM_CELLS, CELL_LENGTH, CELL_LENGTH, GRID_OFFSET, GRID_OFFSET);
-
-  /// loop over footprints and rasterize them into the grid
-  for (const Footprint &footprint : footprints) {
-
-    const Pose unhookedPose = {pose.position, pose.yaw};
-    const auto footprintInRevoyFrame =
-        ReverseTransformFootprint(footprint, unhookedPose);
-
-    AddFootprintToGrid(footprintInRevoyFrame, *grid);
-  }
-  return grid;
-}
 
 } // namespace planning
